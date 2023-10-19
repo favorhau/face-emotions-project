@@ -1,10 +1,15 @@
-from model.cnn.net import FaceCNN
-from model.cnn import predict
+# -*- coding: utf-8 -*-
+from model.cnn.net import FaceCNN as FaceCNN
+from model.cnn import CNNModel
 import cv2
+
+
 
 if __name__ == '__main__':
     im = cv2.imread('template.png', 1)
+    # 初始化模型
+    model = CNNModel()
 
-    print(predict(im))
+    print(model.predict(im))
 
 # FaceCNN()

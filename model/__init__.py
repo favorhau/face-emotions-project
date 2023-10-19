@@ -1,1 +1,0 @@
-from .cnn.net import FaceCNN as FaceCNN
