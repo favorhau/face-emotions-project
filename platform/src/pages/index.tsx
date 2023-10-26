@@ -33,7 +33,7 @@ export default function Home() {
         })
         // ctx.
       }
-      const imgData = canvasRef.current?.toDataURL('string') ?? '';
+      const imgData = canvasRef.current?.toDataURL('image/jpeg', 0.2) ?? '';
       
       gE(imgData);
       requestAnimationFrame(loop);
@@ -61,7 +61,7 @@ export default function Home() {
 
   useEffect(() => {
     init()
-  }, [videoRef])
+  }, [])
   
   
   

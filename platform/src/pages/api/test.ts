@@ -14,7 +14,7 @@ export default async function handler(
 
   const {data} = req.body;
   
-  const ret = await axios.post('http://localhost/api/test', {
+  const ret = await axios.post('http://127.0.0.1:8080/api/test', {
     data: data,
   });
   
