@@ -1,23 +1,35 @@
-from PIL import Image
-from flask import Flask, Response
-import os
-
+# from PIL import Image
+from flask import Flask, Response, request, jsonify
+from model.cnn.net import FaceCNN as FaceCNN
+from model.cnn import CNNModel
+import base64
+import numpy as np
+import cv2
+import json
 
 app = Flask(__name__)
 
+cnnModel = CNNModel()
 
 @app.route('/')
 def index():
     return Response('Tensor Flow object detection')
 
 
-@app.route('/test')
+@app.route('/api/test', methods=['POST'])
 def test():
+    # 取后面需要编码的字符
+    data = eval(request.data)['data'].split(',')[1]
+    imgdata = base64.b64decode(data)
+    
+    img_np = np.frombuffer(imgdata, dtype=np.uint8)
+    img_np_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
 
-    PATH_TO_TEST_IMAGES_DIR = 'object_detection/test_images'  # cwh
-    TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3)]
+    ret, face_window = cnnModel.predict(img_np_cv2)
 
-    image = Image.open(TEST_IMAGE_PATHS[0])
-    # objects = object_detection_api.get_objects(image)
-
-    return ''
+    data =  {
+        "data": ret,
+        "face_data": face_window,
+    }
+    
+    return jsonify(data)

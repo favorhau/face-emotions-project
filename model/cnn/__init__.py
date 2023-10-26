@@ -37,7 +37,7 @@ class CNNModel():
         emotion_labels = {0: 'angry', 1: 'disgust', 2: 'fear', 3: 'happy', 4: 'sad', 5: 'surprise', 6: 'neutral'}
 
         emotion_window = []
-        
+        face_window = []
         
         # 转化成灰度
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -47,7 +47,7 @@ class CNNModel():
         
         for (x, y, w, h) in faces:
             # 在脸周围画一个矩形框，(255,0,0)是颜色，2是线宽
-            cv2.rectangle(gray, (x,y),(x+w,y+h),(84,255,159),2)
+            # cv2.rectangle(gray, (x,y),(x+w,y+h),(84,255,159),2)
 
             # 获取人脸图像
             face = gray[y:y+h,x:x+w]
@@ -73,6 +73,7 @@ class CNNModel():
             emotion = emotion_labels[emotion_arg]
 
             emotion_window.append(emotion)
+            face_window.append([ int(x) , int(y), int(w), int(h)])
             
             
-        return emotion_window
+        return emotion_window, face_window
