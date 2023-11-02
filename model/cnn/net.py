@@ -2,7 +2,7 @@
 import torch.nn as nn
 import os
 
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
+# os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 def gaussian_weights_init(m):
     classname = m.__class__.__name__

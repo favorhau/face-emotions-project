@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import os
 
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
+# os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 dirname = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
