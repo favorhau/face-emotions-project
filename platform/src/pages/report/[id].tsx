@@ -1,57 +1,96 @@
+import Bar from "@/components/Bar";
 import getStream from "@/utils/camera";
 import { getEmotion } from "@/utils/socket/getEmotion";
+import { Slider } from "@mui/material";
+import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
-import {throttle} from 'lodash';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { throttle } from "lodash";
+import { Pie1Chart, Pie1DataProps, Pie2Chart } from "@/components/Chart";
+import { updatePie1Data } from "@/utils/method/updatePie1Data";
+import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Home() {
+export default function Report() {
 
+  const router = useRouter();
+  
+  const {id} = router.query;
+  
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [canvasBox, setCanvasBox] = useState({
-    width: 0,
-    height: 0,
-  })
   const emotion = useRef<string>('');
+  const clickRef = useRef<number>(0);
   const faceBox = useRef<number[][]>([[0, 0, 0, 0]]);
-  const [barData, setBarData] = useState<string[]>(['test1', 'test2', 'test3']);
+  const timer = useRef<number>(0);
+  const workConfig = useRef({
+    fre: 0.5,
+    time: 10,
+  })
+  const state = useRef<'pause' | 'pending' | 'cal' | 'finish'>('pause');
+  const [expressState, setExP] = useState<'pause' | 'pending' | 'cal' | 'finish'>('pause');
   
+
+  //当前采集到的数据
+  const [curData, setCurData] = useState<Pie1DataProps['data']>([]);
+  //采集三种状态
+  
+  //向后端获取情绪数据 根据当前获取频率进行
   const gE = throttle(async (imgData: string) => {
-   const emotions = (await getEmotion(imgData)).data;
-   emotion.current = emotions.data;
-   faceBox.current = emotions.face_data;
-  }, 500)
+    if(state.current === 'pending' && (timer.current - clickRef.current == workConfig.current.fre || timer.current == 0) ){
+      timer.current = clickRef.current;
+      const emotions = (await getEmotion(imgData)).data;
+      emotion.current = emotions.data;
+      faceBox.current = emotions.face_data;
+      setCurData( v  => updatePie1Data(v, emotions.data)); 
+    }
+    
+    //0.5秒的精度检查一次采集时间差
+  }, 500); 
+  
+  const startToGetData = () => {
+    //总共采集帧数
+    clickRef.current = workConfig.current.time;
+    const interval = setInterval(() => {
+      if(clickRef.current === 0){
+        // state.current = 'cal';
+        setExP('cal');
+        clearInterval(interval);
+      }else{
+        clickRef.current-=0.5;
+      }
+      //0.5秒的精度查询当前的时间倒计时
+    }, 500);
+  }
   
   const draw = (ctx:  CanvasRenderingContext2D) => {
     const loop = () => {
-      if(videoRef.current) {
-        ctx?.drawImage(videoRef.current, 0, 0);
-        ctx.strokeStyle = '#0000ff'; //邊框顏色
+      if(videoRef.current && state.current !== 'finish') {
+        ctx?.drawImage(videoRef.current, -100, 0);
+        ctx.strokeStyle = '#3266e9'; //邊框顏色
         ctx.font = "32px Microsoft YaHei";
-        faceBox.current.map(facePos => {
-          setBarData((cur) => [...cur, emotion.current])
-          ctx.strokeRect(facePos[0], facePos[1] ,facePos[2], facePos[3]);  //只有框線的矩形
-          ctx.fillText(emotion.current, facePos[0], facePos[1])
+        faceBox.current.map((facePos, idx) => {
+          if(state.current !== 'finish' && state.current !== 'cal'){
+            ctx.strokeRect(facePos[0], facePos[1] ,facePos[2], facePos[3]);  //只有框線的矩形
+            ctx.fillText(emotion.current[idx], facePos[0], facePos[1] - 10);
+          }
+          
         })
         // ctx.
       }
-      const imgData = canvasRef.current?.toDataURL('image/jpeg', 0.2) ?? '';
+      const imgData = canvasRef.current?.toDataURL('image/jpeg', 0.5) ?? '';
       
       gE(imgData);
       requestAnimationFrame(loop);
     }    
     requestAnimationFrame(loop);
   }
-
+  
   const init = async () => {
     const stream = await getStream();
     if(stream){
       const videoTracks = stream.getVideoTracks();
       console.log(`Using video device: ${videoTracks[0].label}`);
-      const {width, height} = videoTracks[0].getSettings();
-      setCanvasBox({
-        width: width ?? 0, 
-        height: height ?? 0,
-      })
+    //   const {width, height} = videoTracks[0].getSettings();
       if(videoRef.current){
         videoRef.current.srcObject = stream;
         const ctx = canvasRef.current?.getContext('2d');
@@ -59,26 +98,128 @@ export default function Home() {
       }
     }
   }
+  
+  useEffect(() => {
+    state.current = expressState;
+  }, [expressState])
+  
+  useEffect(() => {
+    if(expressState === 'cal'){
+      setTimeout(() => {
+        setExP('finish');
+      }, 1000);
+    }
+  }, [expressState])
 
   useEffect(() => {
     init()
   }, [])
   
+  
 
   return (
     <main
-      className='w-screen h-screen flex flex-row'
+      className='w-screen h-screen flex flex-col '
     >
-    
-      <div className='h-full flex-1 flex flex-col items-center justify-center'>
-        <canvas className="w-full" height={canvasBox.height} width={canvasBox.width} ref={canvasRef}></canvas>
-        <video autoPlay playsInline ref={videoRef} hidden></video>
-      </div>
-      <div className='h-full flex-1 bg-white'>
-        <h1>计算 { barData }</h1>
-        <div id="bar" className="w-80 h-80"></div>
+      <Bar bgColor={'primary'}></Bar>
+      <div className="flex flex-row w-full h-full">
+        <div className="left-pan mt-20 ml-20 flex flex-col relative">
+            { 
+              expressState!=='finish' && <div className="absolute top-4 left-4 flex justify-center items-center">
+                  <div className=" w-3 h-3 rounded-full" style={{background: 'red'}}></div>
+                  <div className="mx-2" style={{color: 'red'}}>REC</div> 
+              </div> 
+            }
+            <canvas className="w-full rounded-2xl bg-black transition-all" 
+              height={480} 
+              width={480} 
+              // style={{transform: expressState==='finish' ? 'scale(0.5) translate(-40%, -50%)': ''}}
+              ref={canvasRef}>
+            </canvas>
+            {/* <Pie2Chart data={curData}/> */}
+
+            <video autoPlay playsInline ref={videoRef} hidden></video>
+        </div>
+        
+        <div className="right-pan flex flex-col flex-1 text-black items-center">
+            {/* 表单控件 工作于pause阶段*/}
+            { expressState === 'pause' && <div className="form w-1/2 mt-36 transition-all relative">
+                <h1 className="text-3xl my-6">视频采集设置</h1>
+                <p>采集秒数</p>
+                <p className="text-xs opacity-20"> 总共采集的时长</p>
+                <Slider
+                    aria-label="Temperature"
+                    defaultValue={10}
+                    getAriaValueText={(v) => `${v}s`}
+                    valueLabelDisplay="auto"
+                    step={10}
+                    marks
+                    min={10}
+                    max={120}
+                    onChange={(e) => {
+                        workConfig.current = {
+                          ...workConfig.current,
+                          time: (e?.target as {value: number} | null)?.value ?? 0
+                        }
+                    }}
+                />
+
+                <p>采集精细度</p>
+                <p className="text-xs opacity-20">  每秒采集帧数</p>
+                <Slider
+                    aria-label="Temperature"
+                    defaultValue={0.5}
+                    getAriaValueText={(v) => `${v}s`}
+                    valueLabelDisplay="auto"
+                    step={0.5}
+                    marks
+                    min={0.5}
+                    max={2}
+                    onChange={(e) => {
+                      workConfig.current = {
+                        ...workConfig.current,
+                        fre: (e?.target as {value: number} | null)?.value ?? 0
+                      }
+                    }}
+                />
+                <button 
+                    className="bg-primary w-16 h-16 rounded-full font-white hover:opacity-70 transition-all mt-10"
+                    onClick={() => {
+                        setExP('pending');
+                        startToGetData();
+                    }}>
+                    <NavigateNextIcon 
+                        className="text-white w-8 h-8"
+                    />
+                </button>
+                
+            </div> }
+            
+            {/* 展示控件 工作于pending阶段*/}
+            { expressState  === 'pending' && <div className="form w-1/2 mt-36 transition-all relative">
+              <h1 className="text-3xl my-6">正在采集中</h1>
+              <div className="text-4xl text-primary"> {Math.round(clickRef.current)} s</div>
+            </div> }
+            
+            {/* 计算控件 工作于cal阶段 */}
+            { expressState  === 'cal' && <div className="form w-1/2 mt-36 transition-all relative">
+              <h1 className="text-3xl my-6">正在生成报告中</h1>
+              <CircularProgress />
+            </div> }
+            
+            {/* 报告控件 工作于finish阶段 */}
+            { expressState  === 'finish' && <div className="form w-1/2 mt-36 transition-all relative">
+              <h1 className="text-3xl my-6">您的情绪得分为</h1>
+              
+              <div className="text-4xl text-primary"> 100 </div>
+              <Pie1Chart data={curData}/>
+            </div> }
+            
+        </div>
+        
       </div>
       
+    
     </main>
   )
 }
