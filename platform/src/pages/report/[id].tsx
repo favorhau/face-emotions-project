@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { throttle } from "lodash";
-import { Pie1Chart, Pie1DataProps, Pie2Chart } from "@/components/Chart";
+import { Pie1Chart, Pie1DataProps, Pie2Chart, RadarChart } from "@/components/Chart";
 import { updatePie1Data } from "@/utils/method/updatePie1Data";
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -31,7 +31,7 @@ export default function Report() {
   
 
   //当前采集到的数据
-  const [curData, setCurData] = useState<Pie1DataProps['data']>([]);
+  const [curPie1Data, setcurPie1Data] = useState<Pie1DataProps['data']>([]);
   //采集三种状态
   
   //向后端获取情绪数据 根据当前获取频率进行
@@ -41,7 +41,7 @@ export default function Report() {
       const emotions = (await getEmotion(imgData)).data;
       emotion.current = emotions.data;
       faceBox.current = emotions.face_data;
-      setCurData( v  => updatePie1Data(v, emotions.data)); 
+      setcurPie1Data( v  => updatePie1Data(v, emotions.data)); 
     }
     
     //0.5秒的精度检查一次采集时间差
@@ -122,21 +122,24 @@ export default function Report() {
       className='w-screen h-screen flex flex-col '
     >
       <Bar bgColor={'primary'}></Bar>
-      <div className="flex flex-row w-full h-full">
-        <div className="left-pan mt-20 ml-20 flex flex-col relative">
+      <div className="flex flex-row w-full h-full mt-20"
+        style={{flexDirection: expressState === 'finish' ? 'column' : 'row'}}>
+        <div 
+          className="left-pan mt-10 ml-20 flex flex-col relative items-center justify-center"
+          style={expressState === 'finish' ? {margin: 0}: {} }>
             { 
-              expressState!=='finish' && <div className="absolute top-4 left-4 flex justify-center items-center">
-                  <div className=" w-3 h-3 rounded-full" style={{background: 'red'}}></div>
+              expressState!=='finish' && <div className="absolute top-[6rem] left-4 flex justify-center items-center">
+                  <div className="w-3 h-3 rounded-full" style={{background: 'red'}}></div>
                   <div className="mx-2" style={{color: 'red'}}>REC</div> 
               </div> 
             }
-            <canvas className="w-full rounded-2xl bg-black transition-all" 
+            <canvas className="rounded-2xl bg-black transition-all" 
               height={480} 
               width={480} 
-              // style={{transform: expressState==='finish' ? 'scale(0.5) translate(-40%, -50%)': ''}}
+              style={{transform: expressState==='finish' ? 'scale(0.5)': ''}}
               ref={canvasRef}>
             </canvas>
-            {/* <Pie2Chart data={curData}/> */}
+            {/* <Pie2Chart data={curPie1Data}/> */}
 
             <video autoPlay playsInline ref={videoRef} hidden></video>
         </div>
@@ -208,11 +211,28 @@ export default function Report() {
             </div> }
             
             {/* 报告控件 工作于finish阶段 */}
-            { expressState  === 'finish' && <div className="form w-1/2 mt-36 transition-all relative">
-              <h1 className="text-3xl my-6">您的情绪得分为</h1>
+            { expressState  === 'finish' && <div className="form w-4/5 transition-all relative h-[100vh]">
+              <h1 className="text-3xl my-6 text-center">您的情绪得分为</h1>
               
-              <div className="text-4xl text-primary"> 100 </div>
-              <Pie1Chart data={curData}/>
+              <div className="text-4xl text-[#20a60d] text-center"> 98 </div>
+              {/* 绘图面板 */}
+              <div className="mt-20 flex flex-wrap justify-between">
+                <div className="flex justify-center flex-col items-center">
+                  <span className="text-xl">情绪比例</span>
+                  <Pie1Chart data={curPie1Data}/>
+                </div>
+                <div className="flex justify-center flex-col items-center">
+                  <span className="text-xl">情感分布</span>
+                  <Pie2Chart data={curPie1Data}/>
+                </div>
+                
+                <div className="flex justify-center flex-col items-center">
+                  <span className="text-xl">心理分析</span>
+                  <RadarChart data={curPie1Data}/>
+                </div>
+                
+              </div>
+              
             </div> }
             
         </div>

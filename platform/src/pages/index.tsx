@@ -17,7 +17,7 @@ export default function Home() {
       {/* 表面蒙层 */}
       <div className="fixed top-0 left-0 w-screen h-screen">
         <Bar />
-        <div className="relative w-5/6 h-full flex flex-row justify-between mt-20 flex-wrap" style={{left: '50%', transform: 'translate(-50%)'}}>
+        <div className="relative w-5/6 h-full flex flex-row justify-between mt-40 flex-wrap" style={{left: '50%', transform: 'translate(-50%)'}}>
           {/* 左边面板 */}
           <div className="text-white text-6xl">
             <p>打开你的情绪世界</p>

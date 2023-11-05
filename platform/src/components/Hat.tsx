@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { SpotLight } from 'three';
+import { Canvas, useFrame } from '@react-three/fiber';
 
 
 function Model() {

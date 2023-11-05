@@ -18,7 +18,7 @@ export default function User() {
       <Bar bgColor={'primary'}></Bar>
     
       <div className="flex flex-row w-full h-full">
-        <div className="left-pan mt-40 ml-20 flex flex-col">
+        <div className="left-pan mt-60 ml-20 flex flex-col">
           <p className="text-black text-4xl">您总共有7项情绪报告</p>
           
           <button className="bg-primary text-xl rounded-xl h-16 w-48 mt-6"

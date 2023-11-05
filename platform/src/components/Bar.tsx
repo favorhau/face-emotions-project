@@ -9,8 +9,9 @@ interface BarProps{
 export default function Bar(props: BarProps){
 
     const { bgColor = 'none' } = props;
-    return <div className='w-full h-28' 
+    return <div className='w-full h-28 fixed' 
             style={{
+            zIndex: 9999,
             background: bgColor === 'primary' ? '#3266E9' : ''}}
         >
         <Image width={200} height={64} className='pl-6 pt-6 cursor-pointer' alt='logo' src={logo} onClick={() => {
