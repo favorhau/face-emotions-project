@@ -4,13 +4,25 @@ import cv2
 from copy import deepcopy
 import numpy as np  
 
-global gF
+# video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
+video = cv2.VideoCapture(0)
 
+global frame
+frame = np.zeros((500, 500, 3), dtype=np.uint8)
+
+def run():
+    while True:
+        ret, img = video.read()
+        _, jpeg = cv2.imencode('.jpg', img)
+        global frame
+        frame = jpeg.tobytes()
+            
+        
 class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
-        self.video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
+        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
 
     def _gstreamer_pipeline(
         self, 
@@ -54,9 +66,11 @@ app = Flask(__name__, static_folder='./static')
 
         
 def gen():
+
     while True:
+        global frame
         yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + thread.get_frame() + b'\r\n\r\n')
+                b'Content-Type: image/jpeg\r\n\r\n' +frame+ b'\r\n\r\n')
                
 @app.route('/')  # 主页
 def index():
@@ -69,6 +83,7 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame') 
 
 if __name__ == '__main__':
-    thread = ThreadCam()
-    thread.start()
+    # thread = ThreadCam()
+    # thread.start()
+    threading.Thread(target=run).start()
     app.run(host='0.0.0.0', debug=True, port=8080)
