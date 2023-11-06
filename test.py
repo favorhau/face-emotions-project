@@ -50,8 +50,11 @@ class VideoCamera(object):
         # 在这里处理视频帧
         # cv2.putText(image, "hello",(10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,(0, 255, 0))
         # 因为opencv读取的图片并非jpeg格式，因此要用motion JPEG模式需要先将图片转码成jpg格式图片
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        try:
+            ret, jpeg = cv2.imencode('.jpg', image)
+            return jpeg.tobytes()
+        except Exception as e:
+            print('error happen,' ,str(e))
 
 class myThread (threading.Thread):   #继承父类threading.Thread
     def __init__(self, threadID, name, counter):
@@ -97,5 +100,5 @@ def video_feed():
 if __name__ == '__main__':
     thread1 = myThread(1, "Thread-1", 1)
     thread1.start()
-    app.run(host='0.0.0.0', debug=True, port=8080)
+    # app.run(host='0.0.0.0', debug=True, port=8080)
     
