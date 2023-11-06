@@ -43,12 +43,12 @@ class MyCamera():
 class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
-        self.camera = MyCamera()
+        
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
 
     def run(self):
         while True:
-            
+            self.camera = MyCamera()
             success, image  = self.camera.video.read()
             _, jpeg = cv2.imencode('.jpg', image)
             self.frame = jpeg.tobytes()
