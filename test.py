@@ -11,6 +11,7 @@ class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
+        self.cap = cv2.VideoCapture(self._gstreamer_pipeline())
 
 
     def _gstreamer_pipeline(
@@ -46,9 +47,9 @@ class ThreadCam(threading.Thread):
 
     def run(self):
         global thread_exit
-        cap = cv2.VideoCapture(self._gstreamer_pipeline())
+        
         while not thread_exit:
-            ret, frame = cap.read()
+            ret, frame = self.cap.read()
             if ret:
                 ret, jpeg = cv2.imencode('.jpg', frame)
                 thread_lock.acquire()
@@ -57,7 +58,7 @@ class ThreadCam(threading.Thread):
             else:
                 thread_exit = True
                 
-        cap.release()
+        self.cap.release()
         
 app = Flask(__name__, static_folder='./static')
 
@@ -66,10 +67,9 @@ def gen():
     global thread_exit
     while not thread_exit:
         thread_lock.acquire()
-        frame = thread.get_frame()
-        thread_lock.release()
         yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                b'Content-Type: image/jpeg\r\n\r\n' + thread.get_frame() + b'\r\n\r\n')
+        thread_lock.release()
                
 @app.route('/')  # 主页
 def index():
