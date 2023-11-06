@@ -50,6 +50,7 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
 app = Flask(__name__, static_folder='./static')
+camera = VideoCamera()
 
 @app.route('/')  # 主页
 def index():
@@ -65,7 +66,7 @@ def gen(camera):
 
 @app.route('/video_feed')  # 这个地址返回视频流响应
 def video_feed():
-    return Response(gen(VideoCamera()),
+    return Response(gen(camera=camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame') 
 
 if __name__ == '__main__':
