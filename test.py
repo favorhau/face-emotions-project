@@ -10,6 +10,7 @@ class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
+        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
 
     def _gstreamer_pipeline(
         self, 
@@ -17,7 +18,7 @@ class ThreadCam(threading.Thread):
         capture_height=720, #摄像头预捕获的图像高度
         display_width=1280, #窗口显示的图像宽度
         display_height=720, #窗口显示的图像高度
-        framerate=60,       #捕获帧率
+        framerate=30,       #捕获帧率
         flip_method=0,      #是否旋转图像
     ):
         return (
@@ -45,7 +46,7 @@ class ThreadCam(threading.Thread):
     def run(self):
 
         while True:
-            ret, frame = cv2.VideoCapture(self._gstreamer_pipeline()).read()
+            ret, frame = self.video.read()
             _, jpeg = cv2.imencode('.jpg', frame)
             self.frame = jpeg.tobytes()
         
@@ -71,4 +72,3 @@ if __name__ == '__main__':
     thread = ThreadCam()
     thread.start()
     app.run(host='0.0.0.0', debug=True, port=8080)
-    
