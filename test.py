@@ -6,7 +6,7 @@ import numpy as np
 
 video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
 # video = cv2.VideoCapture(0)
-
+video.re
 global frame
 frame = np.zeros((500, 500, 3), dtype=np.uint8)
 
@@ -16,6 +16,7 @@ def run():
         _, jpeg = cv2.imencode('.jpg', img)
         global frame
         frame = jpeg.tobytes()
+        video.release()
             
         
 class ThreadCam(threading.Thread):
