@@ -6,7 +6,7 @@ import numpy as np
 class MyCamera():
     def __init__(self) -> None:
         # 获取当前
-        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
+        self.video = cv2.VideoCapture("gst-launch-1.0 nvarguscamerasrc sensor-id=0 ! 'video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, framerate=30/1, format=(string)NV12' ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM)' ! fakesink")
         # self.video = cv2.VideoCapture(0)
         
     def __del__(self):
@@ -20,7 +20,8 @@ class MyCamera():
         display_height=720, #窗口显示的图像高度
         framerate=60,       #捕获帧率
         flip_method=0,      #是否旋转图像
-    ):
+    ):  
+
         return (
             "nvarguscamerasrc ! "
             "video/x-raw(memory:NVMM), "
