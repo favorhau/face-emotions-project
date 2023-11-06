@@ -48,7 +48,7 @@ class VideoCamera(object):
     def get_frame(self):
         success, image = self.video.read()
         # 在这里处理视频帧
-        cv2.putText(image, "hello",(10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,(0, 255, 0))
+        # cv2.putText(image, "hello",(10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,(0, 255, 0))
         # 因为opencv读取的图片并非jpeg格式，因此要用motion JPEG模式需要先将图片转码成jpg格式图片
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
@@ -74,8 +74,12 @@ def gen():
     global cur_frame
     while True:
         # 使用generator函数输出视频流， 每次请求输出的content类型是image/jpeg
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + cur_frame + b'\r\n\r\n')
+        if(cur_frame):
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + cur_frame + b'\r\n\r\n')
+        else:
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + '' + b'\r\n\r\n')
 
 
 thread1 = myThread(1, "Thread-1", 1)
