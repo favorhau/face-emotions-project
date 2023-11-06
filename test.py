@@ -48,8 +48,8 @@ class ThreadCam(threading.Thread):
 
     def run(self):
         while True:
-            self.camera = MyCamera()
-            success, image  = self.camera.video.read()
+            camera = MyCamera()
+            success, image  = camera.video.read()
             _, jpeg = cv2.imencode('.jpg', image)
             self.frame = jpeg.tobytes()
         
