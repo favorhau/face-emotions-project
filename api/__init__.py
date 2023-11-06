@@ -1,4 +1,3 @@
-# from PIL import Image
 from flask import Flask, Response, request, jsonify
 from model.cnn.net import FaceCNN as FaceCNN
 from model.cnn import CNNModel
