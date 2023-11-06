@@ -4,10 +4,10 @@ import cv2
 class VideoCamera(object):
     def __init__(self):
         # 通过opencv获取实时视频流
-        dispW=640
-        dispH=480
-        flip=2
-        camSet='nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=21/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
+        dispW=1280
+        dispH=720
+        flip=0
+        camSet='nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
         self.video = cv2.VideoCapture(camSet)
    
     def __del__(self):
