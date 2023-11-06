@@ -5,8 +5,8 @@ import numpy as np
 
 class MyCamera():
     def __init__(self) -> None:
-        # self.video = cv2.VideoCapture(self._gstreamer_pipeline())
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
+        # self.video = cv2.VideoCapture(0)
         
     def __del__(self):
         self.video.release()
