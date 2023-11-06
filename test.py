@@ -53,8 +53,7 @@ app = Flask(__name__, static_folder='./static')
 
         
 def gen():
-    global thread_exit
-    while not thread_exit:
+    while True:
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + thread.get_frame() + b'\r\n\r\n')
                
@@ -71,5 +70,5 @@ def video_feed():
 if __name__ == '__main__':
     thread = ThreadCam()
     thread.start()
-    # app.run(host='0.0.0.0', debug=True, port=8080)
+    app.run(host='0.0.0.0', debug=True, port=8080)
     
