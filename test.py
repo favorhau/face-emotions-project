@@ -4,12 +4,39 @@ import cv2
 class VideoCamera(object):
     def __init__(self):
         # 通过opencv获取实时视频流
-        dispW=1280
-        dispH=720
-        flip=0
-        camSet='nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
-        self.video = cv2.VideoCapture(camSet)
+        # dispW=1280
+        # dispH=720
+        # flip=0
+        # camSet='nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(flip)+' ! video/x-raw, width='+str(dispW)+', height='+str(dispH)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink'
+        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
    
+    def _gstreamer_pipeline(
+        capture_width=1280, #摄像头预捕获的图像宽度
+        capture_height=720, #摄像头预捕获的图像高度
+        display_width=1280, #窗口显示的图像宽度
+        display_height=720, #窗口显示的图像高度
+        framerate=60,       #捕获帧率
+        flip_method=0,      #是否旋转图像
+    ):
+        return (
+            "nvarguscamerasrc ! "
+            "video/x-raw(memory:NVMM), "
+            "width=(int)%d, height=(int)%d, "
+            "format=(string)NV12, framerate=(fraction)%d/1 ! "
+            "nvvidconv flip-method=%d ! "
+            "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+            "videoconvert ! "
+            "video/x-raw, format=(string)BGR ! appsink"
+            % (
+                capture_width,
+                capture_height,
+                framerate,
+                flip_method,
+                display_width,
+                display_height,
+            )
+        )
+ 
     def __del__(self):
         self.video.release()
    
