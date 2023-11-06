@@ -1,3 +1,4 @@
-# 面部表情识别分析系统
+# Atom GO 面部表情识别分析系统
 
-face-emotions-project
+README
+
