@@ -4,15 +4,12 @@ import cv2
 from copy import deepcopy
 import numpy as np  
 
-thread_lock = threading.Lock()
-thread_exit = False
+global gF
 
 class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
-        self.cap = cv2.VideoCapture(self._gstreamer_pipeline())
-
 
     def _gstreamer_pipeline(
         self, 
@@ -46,19 +43,11 @@ class ThreadCam(threading.Thread):
         return deepcopy(self.frame)
 
     def run(self):
-        global thread_exit
-        
-        while not thread_exit:
-            ret, frame = self.cap.read()
-            if ret:
-                ret, jpeg = cv2.imencode('.jpg', frame)
-                thread_lock.acquire()
-                self.frame = jpeg.tobytes()
-                thread_lock.release()
-            else:
-                thread_exit = True
-                
-        self.cap.release()
+
+        while True:
+            ret, frame = cv2.VideoCapture(self._gstreamer_pipeline()).read()
+            _, jpeg = cv2.imencode('.jpg', frame)
+            self.frame = jpeg.tobytes()
         
 app = Flask(__name__, static_folder='./static')
 
@@ -66,10 +55,8 @@ app = Flask(__name__, static_folder='./static')
 def gen():
     global thread_exit
     while not thread_exit:
-        thread_lock.acquire()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + thread.get_frame() + b'\r\n\r\n')
-        thread_lock.release()
                
 @app.route('/')  # 主页
 def index():
@@ -84,5 +71,5 @@ def video_feed():
 if __name__ == '__main__':
     thread = ThreadCam()
     thread.start()
-    app.run(host='0.0.0.0', debug=True, port=8080)
+    # app.run(host='0.0.0.0', debug=True, port=8080)
     
