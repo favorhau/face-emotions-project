@@ -1,31 +1,16 @@
 from flask import Flask, render_template, Response
 import threading
 import cv2
-from copy import deepcopy
 import numpy as np  
 
-# video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
-# video = cv2.VideoCapture(0)
-
-global frame
-frame = np.zeros((500, 500, 3), dtype=np.uint8)
-
-def run():
-    while True:
-        video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
-        ret, img = video.read()
-        _, jpeg = cv2.imencode('.jpg', img)
-        global frame
-        frame = jpeg.tobytes()
-        video.release()
-            
+class MyCamera():
+    def __init__(self) -> None:
+        # self.video = cv2.VideoCapture(self._gstreamer_pipeline())
+        self.video = cv2.VideoCapture(0)
         
-class ThreadCam(threading.Thread):
-    def __init__(self):
-        super(ThreadCam, self).__init__()
-        self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
-        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
-
+    def __del__(self):
+        self.video.release()
+    
     def _gstreamer_pipeline(
         self, 
         capture_width=1280, #摄像头预捕获的图像宽度
@@ -53,26 +38,26 @@ class ThreadCam(threading.Thread):
                 display_height,
             )
         )
-        
-    def get_frame(self):
-        return deepcopy(self.frame)
+            
+class ThreadCam(threading.Thread):
+    def __init__(self):
+        super(ThreadCam, self).__init__()
+        self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
 
     def run(self):
-
         while True:
-            ret, frame = self.video.read()
-            _, jpeg = cv2.imencode('.jpg', frame)
+            camera = MyCamera()
+            success, image  = camera.video.read()
+            _, jpeg = cv2.imencode('.jpg', image)
             self.frame = jpeg.tobytes()
         
+    def gen(self):
+        while True:
+            yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + self.frame + b'\r\n\r\n')
+                    
+                    
 app = Flask(__name__, static_folder='./static')
-
-        
-def gen():
-
-    while True:
-        global frame
-        yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' +frame+ b'\r\n\r\n')
                
 @app.route('/')  # 主页
 def index():
@@ -81,11 +66,10 @@ def index():
 
 @app.route('/video_feed')  # 这个地址返回视频流响应
 def video_feed():
-    return Response(gen(),
+    return Response(thread.gen(),
                     mimetype='multipart/x-mixed-replace; boundary=frame') 
 
 if __name__ == '__main__':
-    # thread = ThreadCam()
-    # thread.start()
-    threading.Thread(target=run).start()
+    thread = ThreadCam()
+    thread.start()
     app.run(host='0.0.0.0', debug=True, port=8080)
