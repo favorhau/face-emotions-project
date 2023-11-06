@@ -10,7 +10,7 @@ class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
-        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
+        self.video = cv2.VideoCapture('nvarguscamerasrc !  video/x-raw(memory:NVMM), width=3264, height=2464, format=NV12, framerate=30/1 ! nvvidconv flip-method='+str(0)+' ! video/x-raw, width='+str(1080)+', height='+str(720)+', format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink')
 
     def _gstreamer_pipeline(
         self, 
