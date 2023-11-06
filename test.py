@@ -5,6 +5,7 @@ import numpy as np
 
 class MyCamera():
     def __init__(self) -> None:
+        # 获取当前
         self.video = cv2.VideoCapture(self._gstreamer_pipeline())
         # self.video = cv2.VideoCapture(0)
         
@@ -17,7 +18,7 @@ class MyCamera():
         capture_height=720, #摄像头预捕获的图像高度
         display_width=1280, #窗口显示的图像宽度
         display_height=720, #窗口显示的图像高度
-        framerate=30,       #捕获帧率
+        framerate=60,       #捕获帧率
         flip_method=0,      #是否旋转图像
     ):
         return (
@@ -42,12 +43,13 @@ class MyCamera():
 class ThreadCam(threading.Thread):
     def __init__(self):
         super(ThreadCam, self).__init__()
+        self.camera = MyCamera()
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
 
     def run(self):
         while True:
-            camera = MyCamera()
-            success, image  = camera.video.read()
+            
+            success, image  = self.camera.video.read()
             _, jpeg = cv2.imencode('.jpg', image)
             self.frame = jpeg.tobytes()
         
@@ -56,6 +58,9 @@ class ThreadCam(threading.Thread):
             yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + self.frame + b'\r\n\r\n')
                     
+    def get_frame(self):
+        return self.frame
+        
                     
 app = Flask(__name__, static_folder='./static')
                
@@ -67,9 +72,14 @@ def index():
 @app.route('/video_feed')  # 这个地址返回视频流响应
 def video_feed():
     return Response(thread.gen(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame') 
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+                    
+@app.route('/frame', methods=['GET'])  # 这个地址返回视频流响应
+def frame():
+    return Response(thread.get_frame()
+                    ,mimetype='image/jpg')
 
 if __name__ == '__main__':
     thread = ThreadCam()
     thread.start()
-    app.run(host='0.0.0.0', debug=True, port=8080)
+    app.run(host='0.0.0.0', port=8080)
