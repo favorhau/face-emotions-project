@@ -11,6 +11,7 @@ class VideoCamera(object):
         self.video = cv2.VideoCapture(self._gstreamer_pipeline())
    
     def _gstreamer_pipeline(
+        self, 
         capture_width=1280, #摄像头预捕获的图像宽度
         capture_height=720, #摄像头预捕获的图像高度
         display_width=1280, #窗口显示的图像宽度
