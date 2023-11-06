@@ -6,7 +6,7 @@ import numpy as np
 class MyCamera():
     def __init__(self) -> None:
         # 获取当前
-        self.video = cv2.VideoCapture("gst-launch-1.0 nvarguscamerasrc sensor-id=0 ! 'video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, framerate=30/1, format=(string)NV12' ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM)' ! fakesink")
+        self.video = cv2.VideoCapture(self._gstreamer_pipeline())
         # self.video = cv2.VideoCapture(0)
         
     def __del__(self):
@@ -27,7 +27,7 @@ class MyCamera():
             "video/x-raw(memory:NVMM), "
             "width=(int)%d, height=(int)%d, "
             "format=(string)NV12, framerate=(fraction)%d/1 ! "
-            "nvvidconv flip-method=%d ! "
+            "nvvidconv ! flip-method=%d ! "
             "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
             "videoconvert ! "
             "video/x-raw, format=(string)BGR ! appsink"
@@ -46,11 +46,11 @@ class ThreadCam(threading.Thread):
         super(ThreadCam, self).__init__()
         
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
+        self.camera = MyCamera()
 
     def run(self):
         while True:
-            camera = MyCamera()
-            success, image  = camera.video.read()
+            success, image  = self.camera.video.read()
             _, jpeg = cv2.imencode('.jpg', image)
             self.frame = jpeg.tobytes()
         
