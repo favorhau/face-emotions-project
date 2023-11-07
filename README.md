@@ -2,3 +2,6 @@
 
 README
 
+```bash
+ENV=linux python3 main.py
+```

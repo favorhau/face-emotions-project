@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# from model.cnn.net import FaceCNN as FaceCNN
-# from model.cnn import CNNModel
-from api import app
 import db
+from api import app
+
 
 if __name__ == '__main__':
     # 初始化数据库 若不存在数据库则自动新建

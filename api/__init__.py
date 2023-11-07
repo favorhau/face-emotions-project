@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, Response, request, jsonify
 from model.cnn.net import FaceCNN as FaceCNN
 from model.cnn import CNNModel
+from camera import thread
 import base64
 import numpy as np
 import cv2
@@ -31,3 +33,13 @@ def test():
     }
     
     return jsonify(data)
+
+@app.route('/video_feed')  # 这个地址返回视频流响应
+def video_feed():
+    return Response(thread.gen(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+                    
+@app.route('/frame', methods=['GET'])  # 这个地址返回视频流响应
+def frame():
+    return Response(thread.get_frame()
+                    ,mimetype='image/jpg')

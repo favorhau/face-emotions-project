@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # 规范打印 log
 from datetime import datetime
 
