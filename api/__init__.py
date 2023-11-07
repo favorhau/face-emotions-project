@@ -4,7 +4,6 @@ from model.cnn import CNNModel
 import base64
 import numpy as np
 import cv2
-import json
 
 app = Flask(__name__)
 
