@@ -69,7 +69,3 @@ class ThreadCam(threading.Thread):
                     
     def get_frame(self):
         return self.frame
-        
-                    
-thread = ThreadCam()
-thread.start()

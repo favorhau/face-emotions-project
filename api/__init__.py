@@ -2,12 +2,15 @@
 from flask import Flask, Response, request, jsonify
 from model.cnn.net import FaceCNN as FaceCNN
 from model.cnn import CNNModel
-from camera import thread
+from camera import ThreadCam
 import base64
 import numpy as np
 import cv2
 
 app = Flask(__name__)
+
+thread = ThreadCam()
+thread.start()
 
 cnnModel = CNNModel()
     
