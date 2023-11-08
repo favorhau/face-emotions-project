@@ -10,7 +10,7 @@ import cv2
 app = Flask(__name__)
 
 cnnModel = CNNModel()
-
+    
 @app.route('/')
 def index():
     return Response('Tensor Flow object detection')

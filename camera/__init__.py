@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import threading
+from time import sleep
 import cv2
 import os
 import numpy as np  
@@ -62,6 +63,7 @@ class ThreadCam(threading.Thread):
         
     def gen(self):
         while True:
+            sleep(0.03)
             yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + self.frame + b'\r\n\r\n')
                     
