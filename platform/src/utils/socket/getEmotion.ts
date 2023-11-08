@@ -1,9 +1,7 @@
 import axios from "axios";
 
 
-export const getEmotion = async (imgBase64: string) => {
+export const getEmotion = async () => {
 
-    return await axios.post('/api/test', {
-        data: imgBase64,
-    });
+    return await axios.post('/api/test');
 }

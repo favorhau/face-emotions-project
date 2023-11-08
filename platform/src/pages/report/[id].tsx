@@ -4,13 +4,12 @@ import getStream from "@/utils/camera";
 import { getEmotion } from "@/utils/socket/getEmotion";
 import { Slider } from "@mui/material";
 import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { throttle } from "lodash";
 import { Pie1Chart, Pie1DataProps, Pie2Chart, RadarChart } from "@/components/Chart";
 import { updatePie1Data } from "@/utils/method/updatePie1Data";
 import CircularProgress from '@mui/material/CircularProgress';
-import Image from "next/image";
 
 export default function Report() {
 
@@ -18,7 +17,7 @@ export default function Report() {
   
   const {id} = router.query;
   
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const emotion = useRef<string>('');
   const clickRef = useRef<number>(0);
@@ -38,17 +37,15 @@ export default function Report() {
   //采集三种状态
   
   //向后端获取情绪数据 根据当前获取频率进行
-  const gE = throttle(async (imgData: string) => {
+  const gEmotion = useCallback(async () => {
     if(state.current === 'pending' && (timer.current - clickRef.current == workConfig.current.fre || timer.current == 0) ){
       timer.current = clickRef.current;
-      const emotions = (await getEmotion(imgData)).data;
+      const emotions = (await getEmotion()).data;
       emotion.current = emotions.data;
       faceBox.current = emotions.face_data;
       setcurPie1Data( v  => updatePie1Data(v, emotions.data)); 
     }
-    
-    //0.5秒的精度检查一次采集时间差
-  }, 500); 
+  }, []);
   
   const startToGetData = () => {
     //总共采集帧数
@@ -59,6 +56,11 @@ export default function Report() {
         setExP('cal');
         clearInterval(interval);
       }else{
+        if(workConfig.current.fre === 0.5){
+          gEmotion()
+        }else if(clickRef.current % workConfig.current.fre === 0){
+          gEmotion()
+        }
         clickRef.current-=0.5;
       }
       //0.5秒的精度查询当前的时间倒计时
@@ -67,39 +69,32 @@ export default function Report() {
   
   const draw = (ctx:  CanvasRenderingContext2D) => {
     const loop = () => {
-      // if(videoRef.current && state.current !== 'finish') {
-      //   ctx?.drawImage(videoRef.current, -100, 0);
-      //   ctx.strokeStyle = '#3266e9'; //邊框顏色
-      //   ctx.font = "32px Microsoft YaHei";
-      //   faceBox.current.map((facePos, idx) => {
-      //     if(state.current !== 'finish' && state.current !== 'cal'){
-      //       ctx.strokeRect(facePos[0], facePos[1] ,facePos[2], facePos[3]);  //只有框線的矩形
-      //       ctx.fillText(emotion.current[idx], facePos[0], facePos[1] - 10);
-      //     }
+      if(imgRef.current && state.current !== 'finish') {
+        const {width, height} = imgRef.current;
+        const radius = width / height;
+        ctx?.drawImage(imgRef.current, -480 * radius / 4, 0, 480 * radius, 480);
+        ctx.strokeStyle = '#3266e9'; //邊框顏色
+        ctx.font = "32px Microsoft YaHei";
+        faceBox.current.map((facePos, idx) => {
+          if(state.current !== 'finish' && state.current !== 'cal'){
+            //等比例缩小到高度为480的拍摄
+            const strokeRadius = 480 / height
+            ctx.strokeRect(facePos[0] * strokeRadius -480 * radius / 4, facePos[1]  * strokeRadius, facePos[2] * strokeRadius, facePos[3] * strokeRadius);  //只有框線的矩形
+            ctx.fillText(emotion.current[idx], facePos[0] * strokeRadius - 480 * radius / 4 , facePos[1] * strokeRadius - 10);
+          }
           
-      //   })
-      //   // ctx.
-      // }
-      const imgData = canvasRef.current?.toDataURL('image/jpeg', 0.5) ?? '';
-      
-      gE(imgData);
+        })
+      }
       requestAnimationFrame(loop);
     }    
     requestAnimationFrame(loop);
   }
   
   const init = async () => {
-    // const stream = await getStream();
-    // if(stream){
-      // const videoTracks = stream.getVideoTracks();
-      // console.log(`Using video device: ${videoTracks[0].label}`);
-    //   const {width, height} = videoTracks[0].getSettings();
-      if(videoRef.current){
-        videoRef.current.src = 'http://localhost:8080/video_feed';
+      if(imgRef.current){
         const ctx = canvasRef.current?.getContext('2d');
         if(ctx) draw(ctx);
       }
-    // }
   }
   
   useEffect(() => {
@@ -115,7 +110,7 @@ export default function Report() {
   }, [expressState])
 
   useEffect(() => {
-    // init()
+    init()
     requestIdleCallback(() => {
       setImgSrc('http://localhost:8080/video_feed');
     })
@@ -148,8 +143,8 @@ export default function Report() {
             </canvas>
             {/* <Pie2Chart data={curPie1Data}/> */}
 
-            <img src={imgSrc} alt="img"></img>
-            {/* <video autoPlay playsInline ref={videoRef} preload="auto"></video> */}
+            <img src={imgSrc} ref={imgRef} alt="img" hidden></img>
+            {/* <video autoPlay playsInline ref={imgRef} preload="auto"></video> */}
         </div>
         
         <div className="right-pan flex flex-col flex-1 text-black items-center">
