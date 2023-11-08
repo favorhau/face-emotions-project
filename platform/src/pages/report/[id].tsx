@@ -112,7 +112,7 @@ export default function Report() {
   useEffect(() => {
     init()
     requestIdleCallback(() => {
-      setImgSrc('http://localhost:8080/video_feed');
+      setImgSrc(`http://${location.hostname}:8080/video_feed`);
     })
     
   }, [])
