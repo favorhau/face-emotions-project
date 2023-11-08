@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Bar from "@/components/Bar";
 import getStream from "@/utils/camera";
 import { getEmotion } from "@/utils/socket/getEmotion";
@@ -9,6 +10,7 @@ import { throttle } from "lodash";
 import { Pie1Chart, Pie1DataProps, Pie2Chart, RadarChart } from "@/components/Chart";
 import { updatePie1Data } from "@/utils/method/updatePie1Data";
 import CircularProgress from '@mui/material/CircularProgress';
+import Image from "next/image";
 
 export default function Report() {
 
@@ -27,6 +29,7 @@ export default function Report() {
     time: 10,
   })
   const state = useRef<'pause' | 'pending' | 'cal' | 'finish'>('pause');
+  const [imgSrc, setImgSrc] =  useState('');
   const [expressState, setExP] = useState<'pause' | 'pending' | 'cal' | 'finish'>('pause');
   
 
@@ -64,19 +67,19 @@ export default function Report() {
   
   const draw = (ctx:  CanvasRenderingContext2D) => {
     const loop = () => {
-      if(videoRef.current && state.current !== 'finish') {
-        ctx?.drawImage(videoRef.current, -100, 0);
-        ctx.strokeStyle = '#3266e9'; //邊框顏色
-        ctx.font = "32px Microsoft YaHei";
-        faceBox.current.map((facePos, idx) => {
-          if(state.current !== 'finish' && state.current !== 'cal'){
-            ctx.strokeRect(facePos[0], facePos[1] ,facePos[2], facePos[3]);  //只有框線的矩形
-            ctx.fillText(emotion.current[idx], facePos[0], facePos[1] - 10);
-          }
+      // if(videoRef.current && state.current !== 'finish') {
+      //   ctx?.drawImage(videoRef.current, -100, 0);
+      //   ctx.strokeStyle = '#3266e9'; //邊框顏色
+      //   ctx.font = "32px Microsoft YaHei";
+      //   faceBox.current.map((facePos, idx) => {
+      //     if(state.current !== 'finish' && state.current !== 'cal'){
+      //       ctx.strokeRect(facePos[0], facePos[1] ,facePos[2], facePos[3]);  //只有框線的矩形
+      //       ctx.fillText(emotion.current[idx], facePos[0], facePos[1] - 10);
+      //     }
           
-        })
-        // ctx.
-      }
+      //   })
+      //   // ctx.
+      // }
       const imgData = canvasRef.current?.toDataURL('image/jpeg', 0.5) ?? '';
       
       gE(imgData);
@@ -86,17 +89,17 @@ export default function Report() {
   }
   
   const init = async () => {
-    const stream = await getStream();
-    if(stream){
-      const videoTracks = stream.getVideoTracks();
-      console.log(`Using video device: ${videoTracks[0].label}`);
+    // const stream = await getStream();
+    // if(stream){
+      // const videoTracks = stream.getVideoTracks();
+      // console.log(`Using video device: ${videoTracks[0].label}`);
     //   const {width, height} = videoTracks[0].getSettings();
       if(videoRef.current){
-        videoRef.current.srcObject = stream;
+        videoRef.current.src = 'http://localhost:8080/video_feed';
         const ctx = canvasRef.current?.getContext('2d');
         if(ctx) draw(ctx);
       }
-    }
+    // }
   }
   
   useEffect(() => {
@@ -112,7 +115,11 @@ export default function Report() {
   }, [expressState])
 
   useEffect(() => {
-    init()
+    // init()
+    requestIdleCallback(() => {
+      setImgSrc('http://localhost:8080/video_feed');
+    })
+    
   }, [])
   
   
@@ -141,7 +148,8 @@ export default function Report() {
             </canvas>
             {/* <Pie2Chart data={curPie1Data}/> */}
 
-            <video autoPlay playsInline ref={videoRef} hidden></video>
+            <img src={imgSrc} alt="img"></img>
+            {/* <video autoPlay playsInline ref={videoRef} preload="auto"></video> */}
         </div>
         
         <div className="right-pan flex flex-col flex-1 text-black items-center">
