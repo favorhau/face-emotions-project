@@ -4,7 +4,7 @@ import getStream from "@/utils/camera";
 import { getEmotion } from "@/utils/socket/getEmotion";
 import { Slider } from "@mui/material";
 import { useRouter } from "next/router"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { throttle } from "lodash";
 import { Pie1Chart, Pie1DataProps, Pie2Chart, RadarChart } from "@/components/Chart";
@@ -22,6 +22,7 @@ export default function Report() {
   const emotion = useRef<string>('');
   const clickRef = useRef<number>(0);
   const faceBox = useRef<number[][]>([[0, 0, 0, 0]]);
+  const userId = useRef<string[]>([''])
   const timer = useRef<number>(0);
   const workConfig = useRef({
     fre: 0.5,
@@ -43,6 +44,7 @@ export default function Report() {
       const emotions = (await getEmotion()).data;
       emotion.current = emotions.data;
       faceBox.current = emotions.face_data;
+      userId.current = emotions.faces_ids;
       setcurPie1Data( v  => updatePie1Data(v, emotions.data)); 
     }
   }, []);
@@ -81,6 +83,8 @@ export default function Report() {
             const strokeRadius = 480 / height
             ctx.strokeRect(facePos[0] * strokeRadius -480 * radius / 4, facePos[1]  * strokeRadius, facePos[2] * strokeRadius, facePos[3] * strokeRadius);  //只有框線的矩形
             ctx.fillText(emotion.current[idx], facePos[0] * strokeRadius - 480 * radius / 4 , facePos[1] * strokeRadius - 10);
+            ctx.fillText(userId.current[idx], facePos[0] * strokeRadius - 480 * radius / 4 , facePos[1] * strokeRadius + 20);
+            
           }
           
         })
