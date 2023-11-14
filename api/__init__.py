@@ -2,10 +2,12 @@
 from flask import Flask, Response, request, jsonify
 from model.cnn.net import FaceCNN as FaceCNN
 from model.cnn import CNNModel
+from model.face_landmarks import FaceLandMarks
 from camera import ThreadCam
 import base64
 import numpy as np
 import cv2
+from skimage import io
 
 app = Flask(__name__)
 
@@ -13,6 +15,7 @@ thread = ThreadCam()
 thread.start()
 
 cnnModel = CNNModel()
+faceLandMarks = FaceLandMarks()
     
 @app.route('/')
 def index():
@@ -29,10 +32,21 @@ def test():
     img_np_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
 
     ret, face_window = cnnModel.predict(img_np_cv2)
+    
+    faces = []
+    for (x, y, w, h) in face_window:
+        face = img_np_cv2[y:y+h, x:x+w]
+         # 色彩空间变换
+        b, g, r = cv2.split(face)
+        face_rgb = cv2.merge([r, g, b])
+        faces.append(face_rgb)
+        
+    faces_ids = faceLandMarks.predict(faces)
 
     data =  {
         "data": ret,
         "face_data": face_window,
+        "faces_ids": faces_ids,
     }
     
     return jsonify(data)

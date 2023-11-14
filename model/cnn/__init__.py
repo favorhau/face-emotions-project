@@ -30,6 +30,14 @@ class CNNModel():
         images = images/255.0
         return images
 
+    def detect_face(self, img):
+        
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # 转化成灰度
+        faces = self.face_detection.detectMultiScale(gray,1.3,5)
+        
+        return faces
+        
 
     def predict(self, img):
 
@@ -39,10 +47,8 @@ class CNNModel():
         emotion_window = []
         face_window = []
         
-        # 转化成灰度
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        faces = self.face_detection.detectMultiScale(gray,1.3,5)
+        faces = self.detect_face(img=img)
         # font = cv2.FONT_HERSHEY_SIMPLEX
         
         for (x, y, w, h) in faces:
