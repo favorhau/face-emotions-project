@@ -26,10 +26,15 @@ def init():
         try:
         
             cursor.execute('create table __exists__ (id INTEGER PRIMARY KEY)')
-            cursor.execute('create table user (id varchar(20) primary key, name varchar(20), fre int)')
+            cursor.execute('create table user (id varchar(20) primary key, name varchar(20), startTime varchar(20), endTime varchar(20)')
             cursor.execute('create table report (id varchar(20) primary key, user_id varchar(20), date varchar(20), fre int)')
             log('', '数据库初始化成功')
         except Exception as e:
+            try:
+                cursor.execute('DROP TABLE __exists__')
+                cursor.execute('DROP TABLE user')
+                cursor.execute('DROP TABLE report')
+            except Exception: pass
             log(str(e), '数据库初始化失败')
 
 

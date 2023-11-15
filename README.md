@@ -1,16 +1,12 @@
 # Atom GO 面部表情识别分析系统
 
-
+> 本程序适配开发版（JETSON-NANO-DEV-KIT）
 
 ## Overview
 
 精度以1s为基准，查一次数据库
 
 ## Quick Start
-
-### 本机运行
-
-### 开发版（Linux）
 
 
 
