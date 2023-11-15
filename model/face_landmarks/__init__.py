@@ -56,6 +56,7 @@ class FaceLandMarks():
                     face_descriptor = self.facerec.compute_face_descriptor(img, shape)
                     d_test = numpy.array(face_descriptor)
                     r = []
+                    # TODO: 此处可改造为矩阵运算，降低复杂度
                     for k, v in self.faces_feat.items():
                         dist_ = numpy.linalg.norm(v-d_test)
                         r.append(dist_)
