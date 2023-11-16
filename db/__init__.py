@@ -25,9 +25,15 @@ def init():
     else:
         try:
         
+            # 创建是否存在表
             cursor.execute('create table __exists__ (id INTEGER PRIMARY KEY)')
-            cursor.execute('create table user (id varchar(20) primary key, name varchar(20), startTime varchar(20), endTime varchar(20)')
+            # 用户表
+            cursor.execute('create table user (id varchar(20) primary key, name varchar(20), startTime varchar(20), endTime varchar(20))')
+            # 原始数据表
+            cursor.execute('create table data user_id varchar(20), emotion varchar(20))')
+            # 报告表
             cursor.execute('create table report (id varchar(20) primary key, user_id varchar(20), date varchar(20), fre int)')
+            
             log('', '数据库初始化成功')
         except Exception as e:
             try:
