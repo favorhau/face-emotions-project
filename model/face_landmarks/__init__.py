@@ -12,6 +12,8 @@ class FaceLandMarks():
     face_rec_model_path =  dirname + "/package/dlib_face_recognition.dat"
     # 训练图像文件夹
     faces_folder_path = dirname + "/package/train_images"
+    # 识别阈值
+    threhold = 0.5
     
     def __init__(self) -> None:
         # 加载模型
@@ -64,8 +66,12 @@ class FaceLandMarks():
                     # 训练集人物和距离组成一个字典
                     c_d = dict(zip(list(self.faces_feat.keys()), r))  
                     cd_sorted = sorted(c_d.items(), key=lambda d:d[1])
-                    res.append(cd_sorted[0][0])
+                    if(float(cd_sorted[0][1]) < self.threhold):
+                        # 距离比阈值小，则视为成功识别
+                        res.append(cd_sorted[0][0])
+                    else:
+                        res.append(None)
                 except Exception as e:
-                    log(str(e), 'error')
+                    log(str(e), 'face_landmarks.py', 'error')
                     res.append(None)
         return res

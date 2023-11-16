@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, Response, request, jsonify
+from datetime import time
+from flask import Flask, Response, jsonify
+from db.user import get_users
+from log import log
 from model.cnn.net import FaceCNN as FaceCNN
 from model.cnn import CNNModel
 from model.face_landmarks import FaceLandMarks
+from skimage import io
 from camera import ThreadCam
-import base64
 import numpy as np
 import cv2
-from skimage import io
+
 
 app = Flask(__name__)
 
-thread = ThreadCam()
-thread.start()
+threadCam = ThreadCam()
+threadCam.start()
 
-cnnModel = CNNModel()
-faceLandMarks = FaceLandMarks()
+# cnnModel = CNNModel()
+# faceLandMarks = FaceLandMarks()
     
 @app.route('/')
 def index():
