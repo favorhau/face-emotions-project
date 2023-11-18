@@ -79,7 +79,7 @@ def dumps_report(user_id: str, day: str):
         user_id=user_id,
         day=day,
         type='tread',
-        title='快乐悲伤指数',
+        title='活力指数',
         data=json.dumps({
             "prousal": prousal,
             "arousal": arousal,
