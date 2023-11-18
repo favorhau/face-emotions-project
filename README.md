@@ -9,7 +9,6 @@
 ## Quick Start
 
 
-
 ## Dependencies
 
 nodejs v16.15.0
@@ -37,3 +36,24 @@ sqlite 经测试 10w 条数据占据的磁盘空间 < 100M
 3. clock -> calculate -> object data
 
 4. user -> front-end -> back-end
+
+
+## Others
+
+1. 边缘计算 -> 人脸识别 -> 服务器
+
+- 如果想在开发版上做实时用户人脸识别 -> 不可行
+
+- 多用户 30 有点困难
+
+2. 多场景 / 单场景
+
+3. timeline
+
+- 完善的 system
+
+- 把人脸识别 放在 服务器
+
+- 
+
+

@@ -32,7 +32,7 @@ def init(mock: bool = True):
             # 原始数据表
             cursor.execute('create table IF NOT EXISTS data (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id varchar(20), emotion varchar(20), date varchar(20))')
             # 报告表
-            cursor.execute('create table IF NOT EXISTS report (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id varchar(20), date varchar(20), fre int)')
+            cursor.execute('create table IF NOT EXISTS report (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id varchar(20), day varchar(20), type varchar(10), title varchar(20), data TEXT)')
 
 
             if(mock):
