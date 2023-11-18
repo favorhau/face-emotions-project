@@ -12,6 +12,7 @@ from scheduler import SchedulerThread
 # Thread-5 Model Calculator Thread [算法模型计算线程]
 from model.cnn import CNNModel
 
+
 # -*- 中心服务器执行程序 -*-
 from config import CenterServerConfig, ClientConfig
 from center import app as cApp
@@ -19,6 +20,7 @@ from center import app as cApp
 
 if __name__ == '__main__':
     # 初始化数据库 若不存在数据库则自动新建
+    db.empty()
     db.init()
     cnnModel = CNNModel()
     schedulerThread = SchedulerThread(camera=threadCam, emotionModel=cnnModel)

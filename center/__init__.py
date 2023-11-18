@@ -2,8 +2,8 @@
 # -*- 中心服务器 负责验证身份和处理数据 -*-
 from datetime import datetime, time
 from flask import Flask, request
-from .utils import cal_report
-from db.data import insert_data
+from .utils import dumps_report
+from db.data import insert_data, del_data
 from db.user import get_users
 from log import log
 from model.face_landmarks import FaceLandMarks
@@ -32,7 +32,7 @@ def face_reg():
     second = datetime.now().second
     users = get_users((time(hour,minute,second), time(hour,minute,second)))
     
-    log('', '当前', [_[1] for _ in users])
+    # log('', '当前', [_[1] for _ in users])
     
     if(not users): return
     
@@ -70,10 +70,11 @@ def face_reg():
             # user[0] 是id
             user_id = str(user[0])
             day = datetime.now().strftime('%Y-%m-%d')
-            report = cal_report(user_id=user_id, day=day)
+            dumps_report(user_id=user_id, day=day)
             
-            # del_data()
             # 6. 删除对应的原始数据条目
-
-
+            del_data(user_id=user_id, day=day)
+            log('', 'center.py/__init__.py', '录入', user[1], day, '报告成功')
+            
+            
     return ''

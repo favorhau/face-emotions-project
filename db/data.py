@@ -39,3 +39,22 @@ def fetch_data(user_id: str, day: str):
     result = cursor.fetchall()
 
     return result
+    
+    
+@handle_database_exceptions
+def del_data(user_id: str, day: str):
+    """
+    删除数据
+    @params user_id 用户id
+    @params day 数据的日期 精确到日 %Y-%m-%d
+    """
+    
+     # 因为多线程执行，每一次需要单独连接数据库
+    db = sqlite3.connect(db_file)
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM data WHERE strftime('%Y-%m-%d', date) = ? AND user_id = ?", (day, user_id))
+
+    db.commit()
+    result = cursor.fetchall()
+
+    return result

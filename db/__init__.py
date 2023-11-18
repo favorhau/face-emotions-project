@@ -11,9 +11,18 @@ db = sqlite3.connect(db_file)
 cursor = db.cursor()
 
 
-# 初始化数据库
-def init(mock: bool = True):
+def empty():
+    # 清空数据库
+    cursor.execute('DROP TABLE __exists__')
+    cursor.execute('DROP TABLE user')
+    cursor.execute('DROP TABLE data')
+    cursor.execute('DROP TABLE report')
 
+def init(mock: bool = True):
+    """
+    # 初始化数据库
+    @params mock 可选的模拟数据
+    """
     __exists__ = cursor.execute("""
         SELECT name
         FROM sqlite_master
@@ -37,8 +46,12 @@ def init(mock: bool = True):
 
             if(mock):
                 # 如果选择模拟数据，则添加数据
+                from datetime import datetime, timedelta
+                # 时间间隔
+                interval = 20
+                t = datetime.now() + timedelta(seconds=interval)
                 user_data = [
-                    ('戴景昊', '00:00:00', '23:59:59'),
+                    ('戴景昊', '00:00:00', t.strftime("%H:%M:%S")),
                     ('阿拉风', '08:00:00', '23:59:59'),
                 ]
                 for data in user_data:

@@ -4,8 +4,6 @@ import base64
 import math
 from config import CenterServerConfig
 from model.cnn import CNNModel
-from log import log
-from db.user import get_users
 from camera import ThreadCam
 import requests
 import cv2
@@ -16,6 +14,11 @@ import time as t
 
 
 class SchedulerThread(threading.Thread):
+    """
+    # 调度器
+    * 只负责定期监听摄像头，走一次情绪识别，并把对应身份的信息传递给中心服务器
+    * 由中心服务器进行身份识别
+    """
     def __init__(self, camera: ThreadCam, emotionModel: CNNModel) -> None:
         super(SchedulerThread, self).__init__()
         # 摄像头调度线程
