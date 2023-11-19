@@ -34,7 +34,7 @@ def fetch_data(user_id: str, day: str):
      # 因为多线程执行，每一次需要单独连接数据库
     db = sqlite3.connect(db_file)
     cursor = db.cursor()
-    cursor.execute("SELECT emotion FROM data WHERE strftime('%Y-%m-%d', date) = ? and user_id = ?", (day, user_id))
+    cursor.execute("SELECT emotion, date FROM data WHERE strftime('%Y-%m-%d', date) = ? and user_id = ?", (day, user_id))
 
     result = cursor.fetchall()
 

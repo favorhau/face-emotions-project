@@ -48,7 +48,7 @@ def init(mock: bool = True):
                 # 如果选择模拟数据，则添加数据
                 from datetime import datetime, timedelta
                 # 时间间隔
-                interval = 20
+                interval = 30
                 t = datetime.now() + timedelta(seconds=interval)
                 user_data = [
                     ('戴景昊', '00:00:00', t.strftime("%H:%M:%S")),

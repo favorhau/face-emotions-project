@@ -34,7 +34,7 @@ def face_reg():
     
     # log('', '当前', [_[1] for _ in users])
     
-    if(not users): return
+    if(not users): return ''
     
     # 2. 取得数据 并还原
     try:
