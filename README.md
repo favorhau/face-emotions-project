@@ -8,7 +8,15 @@
 
 ## Quick Start
 
+1. 中心服务器运行 
+```python
+python main.py -s
+```
 
+2. 开发版/采集器 运行
+```python
+python main.py -c
+```
 ## Dependencies
 
 nodejs v16.15.0
