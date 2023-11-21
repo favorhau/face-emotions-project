@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
+import sys
 import threading
 from time import sleep
 import cv2
-import os
 import numpy as np  
 
 class Camera():
     def __init__(self) -> None:
         # 获取当前摄像头
-        env = os.environ.get('ENV', 'linux')
-        if(env == 'linux'):
+        if(sys.platform.startswith('linux')):
             self.video = cv2.VideoCapture(self._gstreamer_pipeline())
-        elif (env == 'mac'):
+        else:
             self.video = cv2.VideoCapture(0)
         
     def __del__(self):

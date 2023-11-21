@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # 调度中心 每 1s 执行一次 多线程写入原始数据 -*-
 import base64
-import math
 from config import CenterServerConfig
+from log import log
 from model.cnn import CNNModel
 from camera import ThreadCam
 import requests
@@ -43,13 +43,20 @@ class SchedulerThread(threading.Thread):
             encoded_data = base64.b64encode(face_rgb.tobytes()).decode('utf-8')
             faces.append(encoded_data)
             
-        self.session.post(
-            '{}:{}{}'.format(CenterServerConfig.url, CenterServerConfig.port, CenterServerConfig.face_reg),
-            json={
-                'emotions': ret,
-                'faces': faces,
-            }
-        )
+        try:
+            self.session.post(
+                '{}:{}{}'.format(CenterServerConfig.url, CenterServerConfig.port, CenterServerConfig.face_reg),
+                json={
+                    'emotions': ret,
+                    'faces': faces,
+                },
+                timeout=3000
+            )
+            
+        except Exception as e:
+            log(str(e), '数据同步异常')
+            return
+            
 
         
     def run(self):
