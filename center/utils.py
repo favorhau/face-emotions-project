@@ -98,6 +98,7 @@ def dumps_report(user_id: str, day: str):
         line_data['pleasure'].append(pleasure)
         line_data['timeInterval'].append(timeInterval)
         
+    # 1. 7个情绪的比例
     insert_report(
         user_id=user_id,
         day=day,
@@ -106,6 +107,7 @@ def dumps_report(user_id: str, day: str):
         data=json.dumps(pie1_data),
     )
     
+    # 2. 积极消极中性情绪比例
     insert_report(
         user_id=user_id,
         day=day,
@@ -114,6 +116,7 @@ def dumps_report(user_id: str, day: str):
         data=json.dumps(pie2_data),
     )
     
+    # 3. 唤醒指数 / 高兴指数的加和值
     insert_report(
         user_id=user_id,
         day=day,
@@ -125,6 +128,7 @@ def dumps_report(user_id: str, day: str):
         }),
     )
     
+    # 4. 根据唤醒、高兴指数推断出心理疾病的得分
     insert_report(
         user_id=user_id,
         day=day,
@@ -133,6 +137,7 @@ def dumps_report(user_id: str, day: str):
         data=json.dumps(rader_data),
     )
     
+    # 5. 唤醒指数/高兴指数的变化
     insert_report(
         user_id=user_id,
         day=day,
@@ -141,4 +146,7 @@ def dumps_report(user_id: str, day: str):
         data=json.dumps(line_data),
     )
     
+    # 6. 根据唤醒指数和高兴指数计算出情绪的指向（具体情绪，直接画）
+    
+
     return
