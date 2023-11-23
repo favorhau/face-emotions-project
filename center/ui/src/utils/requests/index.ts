@@ -32,5 +32,9 @@ class HttpClient {
 
 }
 
-const baseURL = 'http://localhost:3000/';
-export const httpClient = new HttpClient(baseURL);
+//发送给服务器的base url
+const sURL = 'http://localhost:8080/';
+//发送给自己代理的url
+const cURL = 'http://localhost:3000/';
+export const httpSlient = new HttpClient(sURL);
+export const httpClient = new HttpClient(cURL);

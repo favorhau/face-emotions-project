@@ -42,7 +42,7 @@ if __name__ == '__main__':
         
         from center import app as cApp
         # 初始化数据库 若不存在数据库则自动新建
-        db.empty()
+        # db.empty()
         db.init()
        
         cApp.run('0.0.0.0', port=CenterServerConfig.port, threaded=True)

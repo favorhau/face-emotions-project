@@ -6,4 +6,4 @@ class CenterServerConfig:
     face_reg="/api/face_reg"
 
 class ClientConfig:
-    port=3000
+    port=8000

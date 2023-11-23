@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # -*- 中心服务器 负责验证身份和处理数据 -*-
 from datetime import datetime, time
-from flask import Flask, request
+from flask import Flask, request, jsonify, send_file, make_response, Response
+from db.report import fetch_report
 from .utils import dumps_report
 from db.data import insert_data, del_data
 from db.user import get_users
@@ -10,6 +11,8 @@ from model.face_landmarks import FaceLandMarks
 import math
 import base64
 import numpy as np
+import json
+import os
 
 app = Flask(__name__)
 faceLandMarks = FaceLandMarks()
@@ -78,3 +81,63 @@ def face_reg():
             
             
     return ''
+
+# 获取报告详情
+@app.route('/api/get_report', methods=['POST'])
+def get_report():
+    data = request.get_json()
+
+    
+    user_id = data.get('user_id')
+    id = data.get('id')
+    name = data.get('name')
+    
+    if(id and not id.isdigit()) : id = None
+    if(user_id and not user_id.isdigit()) : user_id = None
+    
+    result = fetch_report(user_id=user_id, id=id, name=name)
+    
+    ret = []
+    try:
+        for r in result:
+            [_id, _user_id, _date, _type, _title, _data, _name] = r
+            ret.append({
+                "id": _id,
+                "user_id": _user_id,
+                "date": _date,
+                "type": _type, 
+                "title": _title,
+                "data": json.loads(_data),
+                "name": _name,
+            })
+            
+    except Exception as e:
+        log(str(e))
+        
+    return jsonify({
+        "data": ret
+    })
+    
+
+# 图片映射
+@app.route('/api/img/<filename>')
+def get_file(filename):
+    # 假设文件都在 uploads 目录中
+    
+    try:
+        current_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(current_path,'model/package/train_images/{}.jpg'.format(filename))
+
+        with open(file_path, 'rb') as file:
+            image_data = file.read()
+
+        file.close()
+        # 设置响应头
+        headers = {
+            'Content-Type': 'image/jpeg',  # 根据实际情况设置正确的 Content-Type
+            'Cache-Control': 'public, max-age=31536000',  # 一年的缓存
+        }
+
+        return Response(response=image_data, status=200, headers=headers)
+    except Exception as e:
+        return Response(response=f"Error: {str(e)}", status=500)

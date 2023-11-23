@@ -24,3 +24,31 @@ def insert_report(user_id: str, day: str, type: str, title: str, data: str):
     db.commit()
     db.close()
     return result
+    
+    
+@handle_database_exceptions
+def fetch_report(user_id: int, id: int, name: str):
+    """
+    获取报告
+    @params user_id 用户id
+    @params id 报告id
+    @params name 用户姓名
+    """
+    # 因为多线程执行，每一次需要单独连接数据库
+    db = sqlite3.connect(db_file)
+    cursor = db.cursor()
+
+    if user_id:
+        cursor.execute("SELECT report.*, user.name FROM report JOIN user ON report.user_id = user.id WHERE (report.id = ? OR report.id = ?);", (user_id, id, ))
+    else:
+        if name:
+            cursor.execute('SELECT report.id, user.id, report.day, report.type, report.title, report.data, user.name FROM user JOIN report ON user.id = report.user_id WHERE user.name = "{}";'.format(name))
+        else:
+            cursor.execute("SELECT report.*, user.name FROM report JOIN user ON user.id = report.user_id;")
+        
+        
+    result = cursor.fetchall()
+
+    db.commit()
+    db.close()
+    return result
