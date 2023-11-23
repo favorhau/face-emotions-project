@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera, PerspectiveCamera, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 
 
@@ -10,11 +10,14 @@ function Model() {
   })
   const result = useGLTF('/assets/Wizardhat.glb')
   return <>
-    <axesHelper/>
-    <OrbitControls />
-    <ambientLight intensity={1.5}  position={[0, 0, 0 ]}/>
-    <perspectiveCamera position={[0, 100, 200]}></perspectiveCamera>
-    <primitive object={result.scene} />
+    {/* <axesHelper/> */}
+    <OrthographicCamera scale={0.9} position={[0, -2, 0]}>
+      {/* <OrbitControls /> */}
+      <primitive object={result.scene} />
+      <ambientLight intensity={1.5}  position={[0, 0, 0 ]}/>
+    </OrthographicCamera>
+    
+   
   </>
 
 }
@@ -22,7 +25,8 @@ function Model() {
 export default function Hat() {
  
   return (
-    <Canvas style={{height: 600, width: 600}}>
+    <Canvas style={{height: 600, width: 500}}>
+      
       <Suspense>
         <Model />
       </Suspense>

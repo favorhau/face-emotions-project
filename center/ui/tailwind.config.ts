@@ -15,6 +15,9 @@ const config: Config = {
       },
       colors: {
         'primary': '#3266E9',
+        'success': '#28a745',
+        'invaild': '#6c757d',
+        'error': '#dc3545',
       }
     },
   },

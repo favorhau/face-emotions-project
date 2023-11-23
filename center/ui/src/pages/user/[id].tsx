@@ -1,23 +1,61 @@
 import Bar from "@/components/Bar";
 import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Dashboard from "./compoents/Dashboard";
+import Reports from "./compoents/Reports";
 
-export default function User() {
 
-  const router = useRouter()
-  const {id} = router.query;
+const Admin = () => {
+  const [value, setValue] = React.useState('1');
+  const [device, setDevice] = React.useState<'pc' | 'h5'>('pc');
 
-  useEffect(() => {
+  React.useEffect(() => {
+    if(window.innerWidth <= 680){
+      setDevice('h5');
+    }
   }, [])
   
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+  return <div className="w-full flex justify-center" style={{
+    marginTop: device === 'h5' ? '4rem' : '8rem'
+  }}>
+    <Box sx={{ width: '98%', typography: 'body1' }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <Tab label="总览" value="1" />
+            <Tab label="情绪报告" value="2" />
+            <Tab label="用户管理" value="3" />
+            <Tab label="设置" value="4" />
+          </TabList>
+        </Box>
+        <TabPanel value="1">
+          <Dashboard />
+        </TabPanel>
+        <TabPanel value="2">
+          <Reports/>
+        </TabPanel>
+        <TabPanel value="3">Item Three</TabPanel>
+        <TabPanel value="4">Item Three</TabPanel>
+      </TabContext>
+      <footer className="mt-auto bottom-10 w-full flex justify-center my-8 text-black opacity-50 text-thin text-xs ">
+        Copyright © 2023 Atom Go. All rights reserved.
+      </footer>
+    </Box>
+  </div>
+}
 
-  return (
-    <main
-      className='w-screen h-screen flex flex-col '
-    >
-      <Bar bgColor={'primary'}></Bar>
-    
-      <div className="flex flex-row w-full h-full">
+const User = () => {
+  const router = useRouter()
+  return <>
+     <div className="flex flex-row w-full h-full">
         <div className="left-pan mt-60 ml-20 flex flex-col">
           <p className="text-black text-4xl">您总共有7项情绪报告</p>
           
@@ -35,6 +73,24 @@ export default function User() {
           
         </div>
       </div>
-    </main>
-  )
+  </>
+}
+export default function UserContainer() {
+
+  const router = useRouter()
+  const [device, setDevice] = React.useState<'pc' | 'h5'>('pc');
+  const {id} = router.query;
+
+  React.useEffect(() => {
+    if(window.innerWidth <= 680){
+      setDevice('h5');
+    }
+  }, [])
+  if(id === 'admin') return <main
+    className='w-screen h-screen flex flex-col'
+  ><Bar bgColor="primary" device={device}/><Admin/></main>
+  else return  <main
+    className='w-screen h-screen flex flex-col'
+  ><Bar bgColor="primary" device={device}/><User/></main>
+  
 }

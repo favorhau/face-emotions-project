@@ -98,53 +98,73 @@ def dumps_report(user_id: str, day: str):
         line_data['pleasure'].append(pleasure)
         line_data['timeInterval'].append(timeInterval)
         
-    # 1. 7个情绪的比例
-    insert_report(
-        user_id=user_id,
-        day=day,
-        type='pie1',
-        title='情感比例',
-        data=json.dumps(pie1_data),
-    )
-    
-    # 2. 积极消极中性情绪比例
-    insert_report(
-        user_id=user_id,
-        day=day,
-        type='pie2',
-        title='情感分布',
-        data=json.dumps(pie2_data),
-    )
-    
-    # 3. 唤醒指数 / 高兴指数的加和值
-    insert_report(
-        user_id=user_id,
-        day=day,
-        type='tread',
-        title='活力指数',
-        data=json.dumps({
+    all_data = {
+        '情感比例': pie1_data, 
+        '情感分布': pie2_data,
+        '活力指数': {
             "pleasure": pleasure,
             "arousal": arousal,
-        }),
-    )
-    
-    # 4. 根据唤醒、高兴指数推断出心理疾病的得分
+        },
+        '心理分析': rader_data,
+        '心理走向': line_data,
+    }
+
+
     insert_report(
         user_id=user_id,
         day=day,
-        type='radar',
-        title='心理分析',
-        data=json.dumps(rader_data),
+        type='report',
+        title='report',
+        data=json.dumps(all_data),
     )
     
-    # 5. 唤醒指数/高兴指数的变化
-    insert_report(
-        user_id=user_id,
-        day=day,
-        type='line',
-        title='心理走向',
-        data=json.dumps(line_data),
-    )
+    # # 1. 7个情绪的比例
+    # insert_report(
+    #     user_id=user_id,
+    #     day=day,
+    #     type='pie1',
+    #     title='情感比例',
+    #     data=json.dumps(pie1_data),
+    # )
+    
+    # # 2. 积极消极中性情绪比例
+    # insert_report(
+    #     user_id=user_id,
+    #     day=day,
+    #     type='pie2',
+    #     title='情感分布',
+    #     data=json.dumps(pie2_data),
+    # )
+    
+    # # 3. 唤醒指数 / 高兴指数的加和值
+    # insert_report(
+    #     user_id=user_id,
+    #     day=day,
+    #     type='tread',
+    #     title='活力指数',
+    #     data=json.dumps({
+    #         "pleasure": pleasure,
+    #         "arousal": arousal,
+    #     }),
+    # )
+    
+    # # 4. 根据唤醒、高兴指数推断出心理疾病的得分
+    # insert_report(
+    #     user_id=user_id,
+    #     day=day,
+    #     type='radar',
+    #     title='心理分析',
+    #     data=json.dumps(rader_data),
+    # )
+    
+    # # 5. 唤醒指数/高兴指数的变化
+    # insert_report(
+    #     user_id=user_id,
+    #     day=day,
+    #     type='line',
+    #     title='心理走向',
+    #     data=json.dumps(line_data),
+    # )
     
     # 6. 根据唤醒指数和高兴指数计算出情绪的指向（具体情绪，直接画）
     
