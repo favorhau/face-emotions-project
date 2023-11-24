@@ -8,6 +8,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Dashboard from "./compoents/Dashboard";
 import Reports from "./compoents/Reports";
+import Manager from "./compoents/Manager";
 
 
 const Admin = () => {
@@ -26,9 +27,9 @@ const Admin = () => {
   return <div className="w-full flex justify-center" style={{
     marginTop: device === 'h5' ? '4rem' : '8rem'
   }}>
-    <Box sx={{ width: '98%', typography: 'body1' }}>
+    <Box  component="div" sx={{ width: '98%', typography: 'body1' }}>
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box  component="div" sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="总览" value="1" />
             <Tab label="情绪报告" value="2" />
@@ -42,7 +43,9 @@ const Admin = () => {
         <TabPanel value="2">
           <Reports/>
         </TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        <TabPanel value="3">
+          <Manager/>
+        </TabPanel>
         <TabPanel value="4">Item Three</TabPanel>
       </TabContext>
       <footer className="mt-auto bottom-10 w-full flex justify-center my-8 text-black opacity-50 text-thin text-xs ">

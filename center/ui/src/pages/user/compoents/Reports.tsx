@@ -1,6 +1,5 @@
 import { Typography, CircularProgress, Box, IconButton, Backdrop } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import logo from '../../../../public/assets/device.jpg'
 import Image from 'next/image';
 import SearchIcon from '@mui/icons-material/Search';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -11,29 +10,12 @@ type ReportListProps = Array<
         name: string,
         id: string,
         grade: '优秀' | '良好' | '异常',
-        imgData: string,
         date: string,
     }
 >
 
 export default function Reports(){
     const inputRef = useRef<HTMLInputElement>(null);
-    const mock: ReportListProps = [
-        {
-            name: '戴景昊',
-            id: '1',
-            grade: '优秀',
-            imgData: '',
-            date: '2023-11-23',
-        },
-        {
-            name: '戴景昊',
-            id: '2',
-            grade: '优秀',
-            imgData: '',
-            date: '2023-11-23',
-        }
-    ]
     const [list, setList] = useState<ReportListProps>();
     const [open, setOpen] = React.useState(false);
     const handleClose = () => {
@@ -50,11 +32,11 @@ export default function Reports(){
         }) as unknown
         setList(
             [
-                ...data.map(v=>{
+                ...(data as ReportListProps).map(v=>{
                 return {
                     name: v.name,
                     id: v.id,
-                    grade: '优秀',
+                    grade: '优秀' as '优秀' | '良好' | '异常',
                     date: v.date,
                 }
             })]
@@ -74,11 +56,11 @@ export default function Reports(){
         }, 500) 
         setList(
             [
-                ...data.map(v=>{
+                ...(data as ReportListProps).map(v=>{
                 return {
                     name: v.name,
                     id: v.id,
-                    grade: '优秀',
+                    grade: '优秀' as '优秀' | '良好' | '异常',
                     date: v.date,
                 }
             })]
@@ -126,7 +108,7 @@ export default function Reports(){
                         }}>
                         <div className='flex'>
                             <div className='rounded-full bg-black w-[3rem] h-[3rem]' style={{
-                                background: id ? `url(http://localhost:8080/api/img/${id})` : '',
+                                background: id ? `url(/api/img/${id})` : '',
                                 backgroundSize: 'cover'
                             }}></div>
                             <div className='flex flex-col mx-[1rem]'>

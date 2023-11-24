@@ -126,9 +126,10 @@ export default function Dashboard(){
             <Typography variant='h6'>总体用户状态</Typography>
             <div className='flex flex-row flex-wrap'>
                 <div className='flex mt-[2rem] h-[8rem] w-[10rem] flex-col justify-around items-center'>
-                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                    <Box  component="div" sx={{ position: 'relative', display: 'inline-flex' }}>
                         <CircularProgress variant="determinate" value={90} size={90} color='success'/>
                         <Box
+                            component="div"
                             sx={{
                             top: 0,
                             left: 0,
