@@ -46,7 +46,9 @@ const Admin = () => {
         <TabPanel value="3">
           <Manager/>
         </TabPanel>
-        <TabPanel value="4">Item Three</TabPanel>
+        <TabPanel value="4">
+          Item Three
+        </TabPanel>
       </TabContext>
       <footer className="mt-auto bottom-10 w-full flex justify-center my-8 text-black opacity-50 text-thin text-xs ">
         Copyright © 2023 Atom Go. All rights reserved.

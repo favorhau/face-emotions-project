@@ -22,7 +22,7 @@ export default function Bar(props: BarProps){
                 background: bgColor === 'primary' ? '#3266E9' : ''
             }}
         >
-        <Image width={device === 'pc' ? 200:140} 
+        <Image width={device === 'pc' ? 200:150} 
                 style={{padding: device === 'h5' ? 0 : '', transform: 'scale(0.8)',}} 
                 height={device === 'pc' ? 64 : 16} 
                 className='pl-6 pt-6 cursor-pointer' 

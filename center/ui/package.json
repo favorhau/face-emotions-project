@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint --fix"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -14,10 +14,12 @@
     "@mui/icons-material": "^5.14.16",
     "@mui/lab": "^5.0.0-alpha.153",
     "@mui/material": "^5.14.16",
+    "@mui/x-date-pickers": "^6.18.2",
     "@react-three/drei": "^9.88.11",
     "@react-three/fiber": "^8.15.9",
     "@types/three": "^0.158.1",
     "axios": "^1.5.1",
+    "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
