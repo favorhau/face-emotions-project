@@ -4,14 +4,19 @@ import Image from 'next/image';
 import SearchIcon from '@mui/icons-material/Search';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { httpClient } from '@/utils/requests';
+import { calHealthy, calHealthyText } from '@/pages/utils';
+import { ReportDataProps } from '@/pages/report/[id]';
 
-type ReportListProps = Array<
+export type ReportListProps = Array<
     {
         name: string,
         id: string,
-        grade: '优秀' | '良好' | '异常',
+        grade: '优秀' | '良好' | '中等' | '异常',
         date: string,
-    }
+        xlfxData?: Array<{
+            [key: string]: number
+        }>
+    } 
 >
 
 export default function Reports(){
@@ -30,15 +35,18 @@ export default function Reports(){
         const data = await httpClient.post('/api/getReport', {
             id: value ? null : value,
         }) as unknown
+       
         setList(
             [
-                ...(data as ReportListProps).map(v=>{
-                return {
-                    name: v.name,
-                    id: v.id,
-                    grade: '优秀' as '优秀' | '良好' | '异常',
-                    date: v.date,
-                }
+                ...(data as ReportListProps).map((v: any)=>{
+                    console.log(v)
+                    const grade = calHealthyText(calHealthy(v['data']['心理分析'] as unknown as {name: string, value: number}[]));
+                    return {
+                        name: v.name,
+                        id: v.id,
+                        grade: grade,
+                        date: v.date,
+                    }
             })]
         )
     }
@@ -56,11 +64,12 @@ export default function Reports(){
         }, 500) 
         setList(
             [
-                ...(data as ReportListProps).map(v=>{
+                ...(data as ReportListProps).map((v: any)=>{
+                const grade = calHealthyText(calHealthy(v['data']['心理分析'] as unknown as {name: string, value: number}[]));
                 return {
                     name: v.name,
                     id: v.id,
-                    grade: '优秀' as '优秀' | '良好' | '异常',
+                    grade: grade,
                     date: v.date,
                 }
             })]
@@ -116,7 +125,16 @@ export default function Reports(){
                                 <div className='text-invaild text-sm'>{date}</div>
                             </div>
                         </div>
-                        <div className='text-success text-xl mx-4'>{grade}</div>
+                        <div 
+                            className='text-success text-xl mx-4'
+                            style={{
+                                color:
+                                { '优秀': '#7CFFB2',
+                                '良好': '#58D9F9',
+                                '中等': '#FDDD60',
+                                '异常': '#FF6E76'}[grade]
+                            }}
+                        >{grade}</div>
                         <hr className='w-full absolute bottom-[1.4rem] left-0 opacity-30'></hr>
                         <div className='absolute bottom-1  text-invaild text-[0.6rem] flex items-center uppercase'
                             ><BookmarkIcon style={{fontSize: 12}}/>

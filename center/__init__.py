@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, send_file, make_response, Response
 from db.report import fetch_report
 from .utils import dumps_report
 from db.data import insert_data, del_data
-from db.user import get_users
+from db.user import add_users, del_users, get_users
 from log import log
 from model.face_landmarks import FaceLandMarks
 import math
@@ -35,7 +35,7 @@ def face_reg():
     second = datetime.now().second
     users = get_users((time(hour,minute,second), time(hour,minute,second)))
     
-    # log('', '当前', [_[1] for _ in users])
+    log('', '当前', [_[1] for _ in users])
     
     if(not users): return ''
     
@@ -117,6 +117,85 @@ def get_report():
     return jsonify({
         "data": ret
     })
+    
+    
+# 获取用户详情
+@app.route('/api/get_users', methods=['POST'])
+def get_users_():
+    data = request.get_json()
+    
+    result = get_users()
+    
+    ret = []
+    try:
+        for r in result:
+            [_id, _name, _startTime, _endTime] = r
+            ret.append({
+                "id": _id,
+                "name": _name,
+                "startTime": _startTime,
+                "endTime": _endTime,
+            })
+            
+    except Exception as e:
+        log(str(e))
+        return Response(response=f"Error: {str(e)}", status=500)
+        
+    return jsonify({
+        "data": ret
+    })
+    
+# 添加用户
+@app.route('/api/add_users', methods=['POST'])
+def add_users_():
+    data = request.get_json()
+    
+    name = data['name']
+    startTime = data['startTime']
+    endTime = data['endTime']
+    img = data['img']
+    
+    try:
+        # TODO: 检验字段是否符合要求
+        id = add_users(name=name, startTime=startTime, endTime=endTime)
+        
+        current_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(current_path,'model/package/train_images/{}.jpg'.format(id))
+        with open(file_path, 'wb') as f:
+            f.write(base64.b64decode(img))
+            f.close()
+
+    except Exception as e:
+        return Response(response=f"Error: {str(e)}", status=500)
+        
+    return jsonify({
+        "data": {
+            "id": id
+        }
+    })
+    
+# 删除用户
+@app.route('/api/del_users', methods=['POST'])
+def del_users_():
+    data = request.get_json()
+    id = data['id']
+    
+    try:
+        # TODO: 检验字段是否符合要求
+        _ = del_users(id=id)
+        
+        current_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(current_path,'model/package/train_images/{}.jpg'.format(id))
+        os.remove(file_path)
+
+        return jsonify({
+            "data": {
+                "id": id
+            }
+        })
+        
+    except Exception as e:
+        return Response(response=f"Error: {str(e)}", status=500)
     
 
 # 图片映射

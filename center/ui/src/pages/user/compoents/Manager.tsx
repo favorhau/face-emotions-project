@@ -106,8 +106,8 @@ export default function Manager() {
       if(formData.startTime < formData.endTime){
         const payload = {
           ...formData,
-          startTime: formData.startTime.format('H:M:ss'),
-          endTime: formData.endTime.format('H:M:ss'),
+          startTime: formData.startTime.format('HH:mm:ss'),
+          endTime: formData.endTime.format('HH:mm:ss'),
         }
         handleOpen()
         const ret = await httpClient.post('/api/addUsers', payload)
@@ -203,8 +203,11 @@ export default function Manager() {
               >
                 <Button size="small" onClick={
                     () => {
-                      httpClient.post('/api/delUsers', {id: id})
-                      init()
+                      httpClient.post('/api/delUsers', {id: id}).then(() => {
+                        setBannerOpen(false);
+                        init()
+                      })
+                      
                     }
                   } variant="contained">
                   确定

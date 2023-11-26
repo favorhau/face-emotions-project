@@ -1,6 +1,7 @@
 /**图表 */
 import { createRef, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as echarts from 'echarts';
+import { calHealthyText } from "@/pages/utils";
 
 export interface Pie1DataProps{
     data: Array<{
@@ -466,9 +467,9 @@ export function GaugeChart(props: GaugueDataProps){
                 } else if (value === 0.375) {
                   return '中等';
                 } else if (value === 0.125) {
-                  return '差';
+                  return '异常';
                 }
-                return '';
+                return ''
               }
             },
             title: {

@@ -33,3 +33,42 @@ def get_users(date_filter: tuple = None):
     db.close()
     return result
      
+     
+@handle_database_exceptions
+def add_users(name, startTime, endTime):
+    """
+    添加用户
+    @params name 用户名称
+    @params startTime 时间 12:00:00 代表时分秒 %H:%M:%S
+    @params endTime 时间 12:00:00 代表时分秒 %H:%M:%S
+    ```
+    """
+    # 因为多线程执行，每一次需要单独连接数据库
+    db = sqlite3.connect(db_file)
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO user (name, startTime, endTime) VALUES (?, ?, ?)", (name, startTime, endTime))
+    
+    result = cursor.lastrowid
+    
+    db.commit()
+    db.close()
+    
+    return result
+     
+@handle_database_exceptions
+def del_users(id):
+    """
+    删除用户
+    @params id 用户id
+    """
+    # 因为多线程执行，每一次需要单独连接数据库
+    db = sqlite3.connect(db_file)
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM user WHERE id = ?", (id, ))
+    
+    result = cursor.lastrowid
+    db.commit()
+    db.close()
+    
+    return result
+     
