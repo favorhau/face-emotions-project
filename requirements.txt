@@ -1,0 +1,7 @@
+schedule==1.1.0
+scikit_image==0.19.3
+numpy==1.22.3
+Flask==2.2.3
+torch==2.1.0
+opencv_contrib_python==3.4.15.55
+dlib==19.24.2
