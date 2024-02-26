@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # -*- 中心服务器 负责验证身份和处理数据 -*-
 from datetime import datetime, time
+from flask_apscheduler import APScheduler
 from flask import Flask, request, jsonify, send_file, make_response, Response
 from db.report import fetch_report
-from .utils import dumps_report
+from .utils import dumps_report, gen_report
 from db.data import insert_data, del_data
 from db.user import add_users, del_users, get_users
 from log import log
@@ -16,6 +17,18 @@ import os
 
 app = Flask(__name__)
 faceLandMarks = FaceLandMarks()
+scheduler = APScheduler()
+
+# 定时任务
+@scheduler.task('cron', id='do_job_1', day='*', hour='13', minute='26', second='05', misfire_grace_time=900)
+def gen_report_schedule():
+    gen_report()
+
+# 手动生成报告
+@app.route('/api/gen_report', methods=['POST'])
+def gen_report_():
+    gen_report()
+    return ''
 
 # 接受人脸身份识别，进行识别
 @app.route('/api/face_reg', methods=['POST'])
@@ -35,7 +48,7 @@ def face_reg():
     second = datetime.now().second
     users = get_users((time(hour,minute,second), time(hour,minute,second)))
     
-    log('', '当前', [_[1] for _ in users])
+    # log('', '当前', [_[1] for _ in users])
     
     if(not users): return ''
     
@@ -65,19 +78,6 @@ def face_reg():
     for (id, emo) in target_data:
         if(id and id in [str(_[0]) for _  in users]):
             insert_data(user_id=id, emotion=emo)
-   
-    for user in users:
-        # 5. 判断当前的时间是否为时间终点，如果是，则计算报告
-        if(datetime.now().strftime('%H:%M:%S') == user[3]):
-            # 计算报告
-            # user[0] 是id
-            user_id = str(user[0])
-            day = datetime.now().strftime('%Y-%m-%d')
-            dumps_report(user_id=user_id, day=day)
-            
-            # 6. 删除对应的原始数据条目
-            del_data(user_id=user_id, day=day)
-            log('', 'center.py/__init__.py', '录入', user[1], day, '报告成功')
             
             
     return ''

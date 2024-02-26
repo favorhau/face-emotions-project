@@ -44,9 +44,9 @@ export default function Report() {
     const ret = (await httpClient.post('/api/getReport', {
       id,
     }) as { [key: string]: any; data: { [key: string]: any; }; }[])[0];
-
+    console.log(ret)
     setData({
-      userId: id as string,
+      userId: ret.user_id as string,
       name: ret.name,
       date: ret.date,
       xlfxData: ret.data['心理分析'] as any,
@@ -73,7 +73,7 @@ export default function Report() {
     <div className='h-full mt-32 flex flex-col justify-start items-center'>
       <div className="flex flex-col items-center">
         <div style={{
-          background: `center / contain  url(/api/img/${id})`,
+          background: `center / contain  url(/api/img/${data.userId})`,
         }} className="w-24 h-24 p-2 shadow-md rounded-full bg-cover" />
         <text className="text-black text-xl my-1">{data.name}</text>
         <text className="text-invaild text-sm">{data.date}</text>

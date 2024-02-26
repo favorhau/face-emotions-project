@@ -6,6 +6,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { httpClient } from '@/utils/requests';
 import { calHealthy, calHealthyText } from '@/pages/utils';
 import { ReportDataProps } from '@/pages/report/[id]';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 export type ReportListProps = Array<
     {
@@ -13,6 +14,7 @@ export type ReportListProps = Array<
         id: string,
         grade: '优秀' | '良好' | '中等' | '异常',
         date: string,
+        user_id: string,
         xlfxData?: Array<{
             [key: string]: number
         }>
@@ -45,12 +47,19 @@ export default function Reports(){
                         name: v.name,
                         id: v.id,
                         grade: grade,
+                        user_id: v.user_id,
                         date: v.date,
                     }
             })]
         )
     }
     
+    const genReport =  async () => {
+        handleOpen()
+        await httpClient.post('/api/genReport') as unknown
+        handleClose()
+        
+    }
     const searchData = async () => {
         handleOpen()
         const value = inputRef.current?.value;
@@ -71,6 +80,7 @@ export default function Reports(){
                     id: v.id,
                     grade: grade,
                     date: v.date,
+                    user_id: v.user_id,
                 }
             })]
         )
@@ -89,6 +99,14 @@ export default function Reports(){
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+      <div 
+      className='fixed right-[2rem] bottom-[2rem] w-[3rem] h-[3rem] flex justify-center items-center rounded-full bg-primary transition-all  hover:scale-105 cursor-pointer'
+      onClick={() => {
+        genReport()
+      }}
+        >
+            <RefreshIcon sx={{color: 'white'}} />
+        </div>
        <div className='w-full relative'>
         <input
             className="w-full h-14 rounded-2xl pl-6 text-black text-base border" 
@@ -108,7 +126,7 @@ export default function Reports(){
         
         <div className='h-full mt-[2rem] flex flex-wrap'>
             {
-                list && list.map(({name, id, grade, date}) => {
+                list && list.map(({name, id, grade, date, user_id}) => {
                     return <div
                         key={id}
                         className='min-w-[22rem] w-[45vw] shadow p-4 pb-10 mx-2 mb-4 rounded-xl flex items-center justify-between relative cursor-pointer'
@@ -117,7 +135,7 @@ export default function Reports(){
                         }}>
                         <div className='flex'>
                             <div className='rounded-full bg-black w-[3rem] h-[3rem]' style={{
-                                background: id ? `url(/api/img/${id})` : '',
+                                background: id ? `url(/api/img/${user_id})` : '',
                                 backgroundSize: 'cover'
                             }}></div>
                             <div className='flex flex-col mx-[1rem]'>

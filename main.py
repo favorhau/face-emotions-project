@@ -40,9 +40,16 @@ if __name__ == '__main__':
     else:
         # 服务端 数据处理侧 运行
         
-        from center import app as cApp
+        from center import app as cApp, scheduler
+        # 配置定时任务
+        class Config(object):
+            SCHEDULER_API_ENABLED = True
+    
+        cApp.config.from_object(Config())
+        scheduler.init_app(cApp)
+        scheduler.start()
         # 初始化数据库 若不存在数据库则自动新建
         # db.empty()
+        
         db.init()
-       
         cApp.run('0.0.0.0', port=CenterServerConfig.port, threaded=True)
