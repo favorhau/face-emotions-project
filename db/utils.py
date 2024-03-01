@@ -3,6 +3,16 @@
 import sqlite3
 from log import log 
 
+def sql_executor(func):
+    def wrapper(__sql: str, __parameters: dict):
+        query = " WHERE 1=1"
+        for i, _ in __parameters.items():
+            if(_):
+                query += " AND report.{} = :{}".format(i, i)
+
+        return func.execute(__sql + query, __parameters)
+        
+    return wrapper
 
 def handle_database_exceptions(func):
     """

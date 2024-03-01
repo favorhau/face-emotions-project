@@ -24,8 +24,8 @@ parser = argparse.ArgumentParser(
 if __name__ == '__main__':
 
     parser.add_argument('-c', '--client', help='运行在客户端', action='store_true')      # option that takes a value
-    parser.add_argument('-t', '--test', help='在本机上测试', action='store_true')      # option that takes a value
     parser.add_argument('-s', '--server', help='运行在服务端', action='store_true')      # option that takes a value
+    parser.add_argument('-t', '--test', help='在本机上测试', action='store_true')      # option that takes a value
     
     args = parser.parse_args()
 
@@ -36,7 +36,10 @@ if __name__ == '__main__':
         schedulerThread = SchedulerThread(camera=threadCam, emotionModel=cnnModel)
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
-        
+    elif args.test:
+        from db.report import fetch_report
+        ret = fetch_report(user_id=5, id=1, name=None, type='term')
+        print(ret)
     else:
         # 服务端 数据处理侧 运行
         

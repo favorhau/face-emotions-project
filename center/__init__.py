@@ -91,11 +91,12 @@ def get_report():
     user_id = data.get('user_id')
     id = data.get('id')
     name = data.get('name')
+    type = data.get('type')
     
     if(id and not id.isdigit()) : id = None
     if(user_id and not user_id.isdigit()) : user_id = None
     
-    result = fetch_report(user_id=user_id, id=id, name=name)
+    result = fetch_report(user_id=user_id, id=id, name=name, type=type)
     
     ret = []
     try:

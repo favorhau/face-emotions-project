@@ -43,6 +43,7 @@ export default function Report() {
   const init = useCallback(async () => {
     const ret = (await httpClient.post('/api/getReport', {
       id,
+      type: 'term'
     }) as { [key: string]: any; data: { [key: string]: any; }; }[])[0];
     console.log(ret)
     setData({
