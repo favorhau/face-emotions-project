@@ -424,9 +424,9 @@ export function GaugeChart(props: GaugueDataProps){
               lineStyle: {
                 width: 6,
                 color: [
-                  [0.25, '#FF6E76'],
-                  [0.5, '#FDDD60'],
-                  [0.75, '#58D9F9'],
+                  [0.375, '#FF6E76'],
+                  [0.625, '#FDDD60'],
+                  [0.875, '#58D9F9'],
                   [1, '#7CFFB2']
                 ]
               }

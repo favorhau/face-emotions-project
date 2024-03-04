@@ -41,7 +41,6 @@ export default function Reports(){
         setList(
             [
                 ...(data as ReportListProps).map((v: any)=>{
-                    console.log(v)
                     const grade = calHealthyText(calHealthy(v['data']['心理分析'] as unknown as {name: string, value: number}[]));
                     return {
                         name: v.name,
