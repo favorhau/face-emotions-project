@@ -25,6 +25,23 @@ class SchedulerThread(threading.Thread):
         self.camera = camera
         self.emotionModel = emotionModel
         self.session = requests.session()
+        token, url, port = self._get_config()
+        self.token = token
+        self.centerServerConfig = {
+            "url": url,
+            "port": port
+        }
+        
+    def _get_config(self):
+        """
+        获取 .config 信息
+        """
+        import json
+        with open('./.config', 'r') as f:
+            data = json.loads(f.read())
+            token, url, port = data["client"]["token"], data["centerServer"]["url"], data["centerServer"]["port"], 
+        
+        return token, url, port
 
     def exec(self):
         img_np = np.frombuffer(self.camera.get_frame(), dtype=np.uint8)
@@ -45,8 +62,9 @@ class SchedulerThread(threading.Thread):
             
         try:
             self.session.post(
-                '{}:{}{}'.format(CenterServerConfig.url, CenterServerConfig.port, CenterServerConfig.face_reg),
+                '{}:{}{}'.format(self.centerServerConfig['url'], self.centerServerConfig['port'], '/api/face_reg'),
                 json={
+                    'token': self.token, 
                     'emotions': ret,
                     'faces': faces,
                 },

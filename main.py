@@ -37,9 +37,11 @@ if __name__ == '__main__':
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
     elif args.test:
-        from db.report import fetch_report
-        ret = fetch_report(user_id=5, id=1, name=None, type='term')
-        print(ret)
+        # from db.report import fetch_report
+        # ret = fetch_report(user_id=5, id=1, name=None, type='term')
+        # print(ret)
+        from datetime import datetime 
+        print( int(datetime.now().timestamp()))
     else:
         # 服务端 数据处理侧 运行
         
