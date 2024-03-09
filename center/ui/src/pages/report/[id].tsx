@@ -30,7 +30,7 @@ import { httpClient } from "@/utils/requests";
 import Bar from "@/components/Bar";
 import { CircumplexCanvas, GaugeChart, LineChart, LineDataProps, Pie1Chart, Pie1DataProps, Pie2Chart, Pie2DataProps, Pie3Chart, Pie3DataProps, RadarChart, RadarDataProps } from "@/components/Chart";
 import DenseTable from "@/components/Table";
-import { calHealthy } from "../utils";
+import { calHealthy } from "../../utils/calculator";
 
 export default function Report() {
 

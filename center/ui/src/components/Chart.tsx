@@ -1,7 +1,7 @@
 /**图表 */
 import { createRef, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as echarts from 'echarts';
-import { calHealthyText } from "@/pages/utils";
+import { calHealthyText } from "@/utils/calculator";
 
 export interface Pie1DataProps{
     data: Array<{

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import SearchIcon from '@mui/icons-material/Search';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { httpClient } from '@/utils/requests';
-import { calHealthy, calHealthyText } from '@/pages/utils';
+import { calHealthy, calHealthyText } from '@/utils/calculator';
 import { ReportDataProps } from '@/pages/report/[id]';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
