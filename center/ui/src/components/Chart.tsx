@@ -1,7 +1,7 @@
 /**图表 */
 import { createRef, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as echarts from 'echarts';
-import { calHealthyText } from "@/pages/utils";
+import { calHealthyText } from "@/utils/calculator";
 
 export interface Pie1DataProps{
     data: Array<{
@@ -424,9 +424,9 @@ export function GaugeChart(props: GaugueDataProps){
               lineStyle: {
                 width: 6,
                 color: [
-                  [0.25, '#FF6E76'],
-                  [0.5, '#FDDD60'],
-                  [0.75, '#58D9F9'],
+                  [0.375, '#FF6E76'],
+                  [0.625, '#FDDD60'],
+                  [0.875, '#58D9F9'],
                   [1, '#7CFFB2']
                 ]
               }

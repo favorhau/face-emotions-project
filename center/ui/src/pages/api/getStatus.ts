@@ -13,13 +13,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data['data']>
 ) {
-  const  { user_id, id, name, type  } = req.body
-  const ret = await httpSlient.post<Data>('/api/get_report', {
-    user_id,
-    id,
-    name,
-    type
-  });
+  const ret = await httpSlient.post<Data>('/api/get_status');
   
   res.status(200).json(ret.data);
 }

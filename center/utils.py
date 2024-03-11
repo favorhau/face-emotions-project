@@ -1,9 +1,29 @@
 # -*- coding: utf-8 -*-
 from typing import Counter
 from datetime import datetime, timedelta
-from db.data import fetch_data
+from db.data import del_data, fetch_data
 from db.report import insert_report
+from db.user import get_users
 import json
+
+from log import log
+
+def gen_report():
+    """
+    取出所有的用户，针对存在的记录生成报告
+    """
+    users = get_users()
+    for user in users:
+        # 计算报告
+        # user[0] 是id
+        user_id = str(user[0])
+        day = datetime.now().strftime('%Y-%m-%d')
+        logged = dumps_report(user_id=user_id, day=day)
+
+        if(logged):
+            # 删除对应的原始数据条目
+            del_data(user_id=user_id, day=day)
+            log('', 'center.py/__init__.py', '录入', user[1], day, '报告成功')
 
 def dumps_report(user_id: str, day: str):
     """
@@ -16,6 +36,8 @@ def dumps_report(user_id: str, day: str):
     emotions = fetch_data(user_id=user_id, day=day)
     emotions_list = [_[0] for _ in emotions]
     emotions_counter = Counter(emotions_list)
+    
+    if(not emotions): return
     
     # 计算 pie : 情感比例
     
@@ -169,4 +191,4 @@ def dumps_report(user_id: str, day: str):
     # 6. 根据唤醒指数和高兴指数计算出情绪的指向（具体情绪，直接画）
     
 
-    return
+    return True
