@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, Response, jsonify
+import json
+from flask import Flask, Response, jsonify, render_template, request
 from model.cnn.net import FaceCNN as FaceCNN
 from skimage import io
 from camera import ThreadCam
@@ -15,7 +16,48 @@ threadCam.start()
     
 @app.route('/')
 def index():
-    return Response('Tensor Flow object detection')
+    return render_template('index.html')
+
+
+@app.route('/log', methods=['GET'])
+def log():
+    with open('./log/log', 'r') as f:
+        data = f.read().replace('\n', '<br>')
+
+    return data
+    
+
+@app.route('/config', methods=['POST'])
+def config():
+    payload = request.get_json()
+    if (payload['method'] == 'edit'):
+        token = payload['token']
+        url = payload['url']
+        port = payload['port']
+        if(token and url and port):
+            with open('./config/server.config', 'w') as f:
+                f.write(json.dumps({
+                    "client": {
+                        "token": token
+                    },
+                    "centerServer": {
+                        "url": url,
+                        "port": port
+                    }
+                }))
+            f.close()
+            return jsonify({
+                'status': 'success',
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+            })
+    else:
+        with open('./config/server.config', 'r') as f:
+            f_s = json.loads(f.read())
+        f.close()
+        return f_s
 
 
 @app.route('/api/test', methods=['POST'])

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # 调度中心 每 1s 执行一次 多线程写入原始数据 -*-
 import base64
-from config import CenterServerConfig
 from log import log
 from model.cnn import CNNModel
 from camera import ThreadCam
@@ -11,6 +10,7 @@ import numpy as np
 import threading
 import schedule
 import time as t
+import json
 
 
 class SchedulerThread(threading.Thread):
@@ -25,24 +25,32 @@ class SchedulerThread(threading.Thread):
         self.camera = camera
         self.emotionModel = emotionModel
         self.session = requests.session()
-        token, url, port = self._get_config()
-        self.token = token
-        self.centerServerConfig = {
-            "url": url,
-            "port": port
-        }
+        self._get_config()
         
     def _get_config(self):
         """
         获取 .config 信息
         """
         import json
-        with open('./.config', 'r') as f:
+        with open('./config/server.config', 'r') as f:
             data = json.loads(f.read())
             token, url, port = data["client"]["token"], data["centerServer"]["url"], data["centerServer"]["port"], 
         
+        self.token = token
+        self.centerServerConfig = {
+            "url": url,
+            "port": port
+        }
+        
         return token, url, port
 
+    def _write_current(self, payload):
+        try:
+            with open('./config/current.config', 'w') as f:
+                f.write(json.dumps(payload))
+        except Exception as e:
+            log('写入实时情绪失败', str(e))
+        
     def exec(self):
         img_np = np.frombuffer(self.camera.get_frame(), dtype=np.uint8)
         img_np_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
@@ -61,6 +69,11 @@ class SchedulerThread(threading.Thread):
             faces.append(encoded_data)
             
         try:
+            self._write_current({
+                'emotions': ret,
+                'face_windows': face_window,
+            })
+            self._get_config()
             self.session.post(
                 '{}:{}{}'.format(self.centerServerConfig['url'], self.centerServerConfig['port'], '/api/face_reg'),
                 json={
@@ -70,6 +83,7 @@ class SchedulerThread(threading.Thread):
                 },
                 timeout=3000
             )
+            log('', str(ret), '数据同步成功')
             
         except Exception as e:
             log(str(e), '数据同步异常')

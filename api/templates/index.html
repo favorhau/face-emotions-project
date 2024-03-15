@@ -1,0 +1,107 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Atom Go - 设备管理</title>  
+    <link rel="stylesheet" href="../static/index.css"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 引入jQuery -->
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <img class="logo" src="../static/logo.png"></img>
+        <span>设备实时动态</span>
+    </div>
+    <div class="main-box">
+        <div class="left-box">
+            <div class="camera-container">
+                <div class="camera-wrap"><img class="camera"  src="/video_feed"></img></div> 
+            </div>
+            <div class="status-box">
+                <!-- <h2>设置</h2> -->
+                <hr>
+                <div class="form">
+                    <div class="input-container">
+                        <span>本机标识/TOKEN</span>
+                        <input id="token" value="/" />
+                    </div>
+                    <hr>
+                    <div class="input-container">
+                        <span>目标服务器网址/URL</span>
+                        <input type="url" id="url" value="/" />
+                    </div>
+                    <hr>
+                    <div class="input-container">
+                        <span>目标服务器端口/PORT</span>
+                    <input type="number" id="port" value="/" />
+                    </div>
+                    <hr>
+                    <button type="submit" id="submit">
+                        提交
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <div class="right-box">
+            <div class="log">
+                程序初始化成功，日志获取中...
+            </div>
+        </div>
+   </div>
+    <script>
+        function updateLog(){
+            $.ajax({
+            type: "GET",
+            url: "/log",
+            success: function (response) {
+                console.log(response)
+                $('.log').html(response)
+            }
+        });
+        }
+        function handleSubmit(e){
+            // e.preventDefault();
+            $.ajax({
+            type: "POST",
+            url: "/config",
+            data: JSON.stringify({
+                method: 'edit',
+                url: $('#url').val(),
+                port: $('#port').val(),
+                token: $('#token').val(),
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                if(response.status == 'success'){
+                    alert('修改成功');
+                }else{
+                    alert('修改失败');
+                }
+            },
+            error: function () {  
+                alert('网络异常');
+            }
+        });
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "/config",
+            data: JSON.stringify({
+                method: 'get'
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                const {centerServer, client} = response
+                $('#url').val(centerServer.url)
+                $('#port').val(centerServer.port)
+                $('#token').val(client.token)
+            }
+        });
+        
+        $('#submit').on('click', handleSubmit)
+        setInterval(updateLog, 3000);
+    </script>
+</body>  
+</html>

@@ -1,0 +1,145 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+img{
+    display: block;
+}
+body{
+    background: #303030;
+}
+.header{
+    background: #202020;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+}
+.header span{
+    color: white;
+    padding-right: 50px;
+}
+.logo{
+    height: 50px;
+    padding: 20px
+}
+input{
+    background: #202020;
+    margin: 0;
+    padding: 0;
+    border: 1px solid white; 
+    color: white;
+    height: 40px;
+
+}
+.input-container{
+    background: #202020;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+}
+.status-box{
+    flex-direction: column;
+    background: #202020;
+    flex: 1;
+    width: 100%;
+    color: white;
+    display: flex;
+}
+.status-box .form{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.status-box button{
+    height: 50px;
+}
+.camera-container{
+    background: #202020;
+    padding: 20px 0 20px 0;
+}
+.camera-wrap{
+    background: #202020;
+    width: 49.5vw;
+    height: 49.5vh;
+    overflow: hidden;
+    border-radius: 40px;
+    position: relative;
+}
+.camera{
+    background: #202020;
+    width: 50vw;
+    height: 50vh;
+    object-fit: cover;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+.main-box{
+    display: flex;
+    
+}
+
+.log{
+    text-align: left;
+    font-size: 14px;
+    color: white;
+    padding: 20px;
+}
+.left-box{
+    display: flex;
+    width: 50vw;
+    flex-direction: column;
+}
+.right-box{
+    background: black;
+    width: 50vw;
+    height: 90vh;
+}
+
+
+@media screen and (max-width: 600px) {
+    .main-box{
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+    }
+    .camera-container{
+        background: #202020;
+        padding: 0;
+    }
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .camera-wrap{
+        background: #202020;
+        width: 99.5vw;
+        height: 99.5vw;
+        overflow: hidden;
+        border-radius: 40px;
+        position: relative;
+    }
+    .camera {
+        background: #202020;
+        width: 100vw;
+        height: 100vw;
+        border-radius: 40px;
+    }
+    .left-box{
+        width: 100vw;
+    }
+    .right-box{
+        background: black;
+        width: 100vw;
+        flex: auto;
+    }
+}
+
