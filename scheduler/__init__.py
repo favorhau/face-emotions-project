@@ -25,12 +25,7 @@ class SchedulerThread(threading.Thread):
         self.camera = camera
         self.emotionModel = emotionModel
         self.session = requests.session()
-        token, url, port = self._get_config()
-        self.token = token
-        self.centerServerConfig = {
-            "url": url,
-            "port": port
-        }
+        self._get_config()
         
     def _get_config(self):
         """
@@ -40,6 +35,12 @@ class SchedulerThread(threading.Thread):
         with open('./config/server.config', 'r') as f:
             data = json.loads(f.read())
             token, url, port = data["client"]["token"], data["centerServer"]["url"], data["centerServer"]["port"], 
+        
+        self.token = token
+        self.centerServerConfig = {
+            "url": url,
+            "port": port
+        }
         
         return token, url, port
 
@@ -72,6 +73,7 @@ class SchedulerThread(threading.Thread):
                 'emotions': ret,
                 'face_windows': face_window,
             })
+            self._get_config()
             self.session.post(
                 '{}:{}{}'.format(self.centerServerConfig['url'], self.centerServerConfig['port'], '/api/face_reg'),
                 json={
@@ -81,6 +83,7 @@ class SchedulerThread(threading.Thread):
                 },
                 timeout=3000
             )
+            log('', str(ret), '数据同步成功')
             
         except Exception as e:
             log(str(e), '数据同步异常')

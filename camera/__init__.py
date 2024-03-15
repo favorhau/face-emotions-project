@@ -56,6 +56,7 @@ class ThreadCam(threading.Thread):
         
         self.frame = np.zeros((500, 500, 3), dtype=np.uint8)
         self.camera = Camera()
+        # 设置缓存，防止频繁读取IO爆炸
         self.readTimeInterval = 0
         self.currentEmotions = None
         self.currentFaceWindows = None
@@ -78,10 +79,11 @@ class ThreadCam(threading.Thread):
         return [], []
 
     def run(self):
+        # 启动多线程
         while True:
             _, image  = self.camera.video.read()
             emotions, face_windows = self._read_current()
-            # print(emotions, face_windows)
+            # 绘制识别结果返回
             for (x, y, w, h), e in zip(face_windows, emotions):
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.rectangle(image, (x, y), (x+w, y+h), (0,0,255), 2)
@@ -91,6 +93,7 @@ class ThreadCam(threading.Thread):
             self.frame = jpeg.tobytes()
         
     def gen(self):
+        # 实时返回图像
         while True:
             sleep(0.03)
             yield (b'--frame\r\n'
