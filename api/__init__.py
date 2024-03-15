@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, Response, jsonify
+from flask import Flask, Response, jsonify, render_template
 from model.cnn.net import FaceCNN as FaceCNN
 from skimage import io
 from camera import ThreadCam
@@ -15,7 +15,7 @@ threadCam.start()
     
 @app.route('/')
 def index():
-    return Response('Tensor Flow object detection')
+    return render_template('index.html')
 
 
 @app.route('/api/test', methods=['POST'])
