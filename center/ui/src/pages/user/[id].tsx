@@ -34,7 +34,6 @@ const Admin = () => {
             <Tab label="总览" value="1" />
             <Tab label="情绪报告" value="2" />
             <Tab label="用户管理" value="3" />
-            <Tab label="设置" value="4" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -45,9 +44,6 @@ const Admin = () => {
         </TabPanel>
         <TabPanel value="3">
           <Manager/>
-        </TabPanel>
-        <TabPanel value="4">
-          Item Three
         </TabPanel>
       </TabContext>
       <footer className="mt-auto bottom-10 w-full flex justify-center my-8 text-black opacity-50 text-thin text-xs ">
