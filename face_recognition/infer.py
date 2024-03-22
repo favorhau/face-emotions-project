@@ -32,44 +32,44 @@ if __name__ == '__main__':
 
     # img = predictor.draw_face(img, boxes, names, emotions)
     
-    camera = CSI_Camera()
-    camera.open(
-        gstreamer_pipeline(
-            sensor_id=0,
-            capture_width=1920,
-            capture_height=1080,
-            flip_method=0,
-            display_width=960,
-            display_height=540,
-        )
-    )
-    camera.start()
-    if camera.video_capture.isOpened():
-        try:
-            while True:
-                res, img  = camera.read()
-                if res == False:
-                    print('img is None')
-                    break
-                # # kk = cv2.waitKey(1)
-                # # do other things
-                boxes, names, emotions = predictor.recognition(img)
+    # camera = CSI_Camera()
+    # camera.open(
+    #     gstreamer_pipeline(
+    #         sensor_id=0,
+    #         capture_width=1920,
+    #         capture_height=1080,
+    #         flip_method=0,
+    #         display_width=960,
+    #         display_height=540,
+    #     )
+    # )
+    # camera.start()
+    # if camera.video_capture.isOpened():
+    #     try:
+    #         while True:
+    #             res, img  = camera.read()
+    #             if res == False:
+    #                 print('img is None')
+    #                 break
+    #             # # kk = cv2.waitKey(1)
+    #             # # do other things
+    #             boxes, names, emotions = predictor.recognition(img)
 
-                img = predictor.draw_face(img, boxes, names, emotions)
-                cv2.imshow("face recognition",img)
-                # This also acts as
-                keyCode = cv2.waitKey(30) & 0xFF
-                # Stop the program on the ESC key
-                if keyCode == 27:
-                    break
-        finally:
-            camera.stop()
-            camera.release()
+    #             img = predictor.draw_face(img, boxes, names, emotions)
+    #             cv2.imshow("face recognition",img)
+    #             # This also acts as
+    #             keyCode = cv2.waitKey(30) & 0xFF
+    #             # Stop the program on the ESC key
+    #             if keyCode == 27:
+    #                 break
+    #     finally:
+    #         camera.stop()
+    #         camera.release()
                 
-        cv2.destroyAllWindows()   
+    #     cv2.destroyAllWindows()   
 
-        # camera.video.release()
-    else:
+    #     # camera.video.release()
+    # else:
         print("Error: Unable to open both cameras")
         camera.stop()
         camera.release()
