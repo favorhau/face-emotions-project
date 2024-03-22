@@ -29,7 +29,7 @@ if __name__ == '__main__':
     predictor = Predictor(args.mtcnn_model_path, args.mobilefacenet_model_path, args.emotion_model_path, args.face_db_path, threshold=args.threshold)
     img = cv2.imdecode(np.fromfile(args.image_path, dtype=np.uint8), -1)
     boxes, names, emotions = predictor.recognition(img)
-    predictor(boxes, names, emotions)
+    print(boxes, names, emotions)
     # img = predictor.draw_face(img, boxes, names, emotions)
     
     # camera = CSI_Camera()
