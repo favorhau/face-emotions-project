@@ -70,6 +70,6 @@ if __name__ == '__main__':
 
     #     # camera.video.release()
     # else:
-        print("Error: Unable to open both cameras")
-        camera.stop()
-        camera.release()
+        # print("Error: Unable to open both cameras")
+        # camera.stop()
+        # camera.release()
