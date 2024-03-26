@@ -46,13 +46,13 @@ if __name__ == '__main__':
         mtcnn_model_path = 'model/save_model/mtcnn'
         emotion_model_path = 'model/save_model/best_checkpoint.tar'
         mobilefacenet_model_path = 'model/save_model/mobilefacenet.pth'
-        image_path = './children7.jpg'
+        image_path = './assets/children7.jpg'
         face_db_path = 'face_db'
         threshold = 0.6
         predictor = Predictor(mtcnn_model_path, mobilefacenet_model_path, emotion_model_path, face_db_path, threshold)
         img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
         boxes, names, emotions = predictor.recognition(img)
-        
+        predictor(boxes)
         
     else:
         # 服务端 数据处理侧 运行

@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 from .ResNet import ResNet18
-from detection.face_detect import MTCNN
+from model.detection.face_detect import MTCNN
 from PIL import ImageDraw, ImageFont, Image
 
 
