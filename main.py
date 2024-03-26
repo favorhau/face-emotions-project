@@ -37,11 +37,23 @@ if __name__ == '__main__':
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
     elif args.test:
-        # from db.report import fetch_report
-        # ret = fetch_report(user_id=5, id=1, name=None, type='term')
-        # print(ret)
-        from datetime import datetime 
-        print( int(datetime.now().timestamp()))
+        
+        import argparse
+        import cv2
+        import numpy as np
+        from model.resnet import Predictor
+
+        mtcnn_model_path = 'model/save_model/mtcnn'
+        emotion_model_path = 'model/save_model/best_checkpoint.tar'
+        mobilefacenet_model_path = 'model/save_model/mobilefacenet.pth'
+        image_path = './children7.jpg'
+        face_db_path = 'face_db'
+        threshold = 0.6
+        predictor = Predictor(mtcnn_model_path, mobilefacenet_model_path, emotion_model_path, face_db_path, threshold)
+        img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
+        boxes, names, emotions = predictor.recognition(img)
+        
+        
     else:
         # 服务端 数据处理侧 运行
         
