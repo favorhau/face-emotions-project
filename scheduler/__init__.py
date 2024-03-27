@@ -60,6 +60,7 @@ class SchedulerThread(threading.Thread):
         
         faces = []
         
+        print(boxes, names, emotions)
         for (x, y, w, h) in boxes:
             face = img_np_cv2[y:y+h, x:x+w]
             # 色彩空间变换
@@ -84,7 +85,6 @@ class SchedulerThread(threading.Thread):
                 },
                 timeout=3000
             )
-            print(boxes, names, emotions)
             log('', str(emotions), '数据同步成功')
             
         except Exception as e:
