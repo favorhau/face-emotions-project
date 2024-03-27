@@ -80,6 +80,7 @@ class SchedulerThread(threading.Thread):
                 json={
                     'token': self.token, 
                     'emotions': emotions,
+                    'windows': boxes,
                     'faces': faces,
                 },
                 timeout=3000
