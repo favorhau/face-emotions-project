@@ -61,16 +61,11 @@ class Predictor:
 
     def recognition(self, img):
         # img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
-        s = time.time()
         imgs, boxes = self.mtcnn.infer_image(img)
-        print('人脸检测时间：%dms' % int((time.time() - s) * 1000))
         if imgs is None or boxes is None:
             return [], []
-        s = time.time()
         images = self.process(imgs)
         images = np.array(images, dtype='float32')
-        
-        s = time.time()
         emotions = []
         # for box in boxes:
         for face in imgs:
@@ -96,7 +91,6 @@ class Predictor:
             # print(emotion)
             emotions.append(emotion)
 
-        print('表情识别时间：%dms' % int((time.time() - s) * 1000))
         new_boxes = []
         for i in range(boxes.shape[0]):
             bbox = boxes[i, :4]

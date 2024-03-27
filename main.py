@@ -10,7 +10,7 @@ import db
 # Thread-4 Scheduler trigger Thread [中心定时调度器线程]
 from scheduler import SchedulerThread
 # Thread-5 Model Calculator Thread [算法模型计算线程]
-from model.cnn import CNNModel
+from model.resnet import Predictor
 
 
 # -*- 中心服务器执行程序 -*-
@@ -32,31 +32,16 @@ if __name__ == '__main__':
     if args.client:
         # 客户端 数据采集侧 运行
         from api import app, threadCam
-        cnnModel = CNNModel()
-        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=cnnModel)
-        schedulerThread.start()
-        app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
-    elif args.test:
-
-        import cv2
-        import numpy as np
-        from model.resnet import Predictor
-        
-
         mtcnn_model_path = 'model/save_model/mtcnn'
         emotion_model_path = 'model/save_model/best_checkpoint.tar'
         image_path = './assets/children7.jpg'
         threshold = 0.6
-        predictor = Predictor(mtcnn_model_path, emotion_model_path, threshold)
-
-        from api import app, threadCam
-        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=predictor)
+        predictorModel = Predictor(mtcnn_model_path, emotion_model_path, threshold)
+        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=predictorModel)
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
-        # img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
-        # boxes, names, emotions = predictor.recognition(img)
-        # print(boxes)
-        
+    elif args.test:
+        pass
     else:
         # 服务端 数据处理侧 运行
         

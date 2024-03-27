@@ -60,7 +60,6 @@ class SchedulerThread(threading.Thread):
         
         faces = []
         
-        print(boxes, emotions)
         for (x, y, w, h) in boxes:
             face = img_np_cv2[y:y+h, x:x+w]
             # 色彩空间变换
