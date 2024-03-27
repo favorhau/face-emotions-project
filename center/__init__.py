@@ -137,13 +137,13 @@ def face_reg():
             for _ in decoded_image
         ]
     except Exception as e:
-        log('error', 'center/__init__.py', 'decoded Error')
+        log('error', 'center/__init__.py', 'decoded Error', e)
         
     # 3. 进行人脸身份识别
     try:
         res = faceLandMarks.predict(reshape_image)
     except Exception as e:
-        log('error', 'center/__init__.py', 'predict Error')
+        log('error', 'center/__init__.py', 'predict Error', e)
         
     target_data = zip(res, data['emotions'])
     # 4. 录入原始数据
