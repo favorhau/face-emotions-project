@@ -97,10 +97,13 @@ class Predictor:
             emotions.append(emotion)
 
         print('表情识别时间：%dms' % int((time.time() - s) * 1000))
-
-        boxes = boxes[0:4]
+        new_boxes = []
+        for i in range(boxes.shape[0]):
+            bbox = boxes[i, :4]
+            corpbbox = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
+            new_boxes.append(corpbbox)
         
-        return boxes, emotions
+        return new_boxes, emotions
 
     def add_text(self, img, text, left, top, color=(0, 0, 0), size=20):
         if isinstance(img, np.ndarray):
