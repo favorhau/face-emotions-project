@@ -10,7 +10,6 @@ import db
 # Thread-4 Scheduler trigger Thread [中心定时调度器线程]
 from scheduler import SchedulerThread
 # Thread-5 Model Calculator Thread [算法模型计算线程]
-from model.cnn import CNNModel
 
 
 # -*- 中心服务器执行程序 -*-
@@ -32,16 +31,17 @@ if __name__ == '__main__':
     if args.client:
         # 客户端 数据采集侧 运行
         from api import app, threadCam
-        cnnModel = CNNModel()
-        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=cnnModel)
+        from model.resnet import Predictor
+        mtcnn_model_path = 'model/save_model/mtcnn'
+        emotion_model_path = 'model/save_model/best_checkpoint.tar'
+        image_path = './assets/children7.jpg'
+        threshold = 0.6
+        predictorModel = Predictor(mtcnn_model_path, emotion_model_path, threshold)
+        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=predictorModel)
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
     elif args.test:
-        # from db.report import fetch_report
-        # ret = fetch_report(user_id=5, id=1, name=None, type='term')
-        # print(ret)
-        from datetime import datetime 
-        print( int(datetime.now().timestamp()))
+        pass
     else:
         # 服务端 数据处理侧 运行
         

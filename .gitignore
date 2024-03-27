@@ -1,6 +1,7 @@
 # Custom
 model/package/*
 !model/package/train_images/
+log/log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

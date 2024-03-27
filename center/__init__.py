@@ -119,13 +119,14 @@ def face_reg():
     token = data['token']
     
     # log('', '当前', [_[1] for _ in users])
-    
+
     if(not users): return ''
     if(token):
         statusDict['device'][token] = int(datetime.now().timestamp())     
     
     # 2. 取得数据 并还原
     try:
+        windows = data['windows']
         # 解码base64
         decoded_image = [
             np.frombuffer(base64.b64decode(_), dtype=np.uint8)
@@ -133,24 +134,25 @@ def face_reg():
         ]
         # 还原array状态
         reshape_image = [
-            _.reshape((int(math.sqrt(_.shape[0]/3)), int(math.sqrt(_.shape[0]/3)), 3)) 
-            for _ in decoded_image
+            img.reshape((windows[idx][2], windows[idx][3], 3))
+            for (idx, img) in enumerate(decoded_image)
         ]
+        
     except Exception as e:
-        log('error', 'center/__init__.py', 'decoded Error')
+        log('error', 'center/__init__.py', 'decoded Error', e)
         
     # 3. 进行人脸身份识别
     try:
         res = faceLandMarks.predict(reshape_image)
     except Exception as e:
-        log('error', 'center/__init__.py', 'predict Error')
+        log('error', 'center/__init__.py', 'predict Error', e)
         
+
     target_data = zip(res, data['emotions'])
     # 4. 录入原始数据
     for (id, emo) in target_data:
         if(id and id in [str(_[0]) for _  in users]):
             insert_data(user_id=id, emotion=emo)
-            
             
     return ''
 
