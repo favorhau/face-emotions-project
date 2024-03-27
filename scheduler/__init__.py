@@ -11,7 +11,6 @@ import threading
 import schedule
 import time as t
 import json
-from model.resnet import Predictor
 
 
 class SchedulerThread(threading.Thread):
@@ -20,7 +19,7 @@ class SchedulerThread(threading.Thread):
     * 只负责定期监听摄像头，走一次情绪识别，并把对应身份的信息传递给中心服务器
     * 由中心服务器进行身份识别
     """
-    def __init__(self, camera: ThreadCam, emotionModel: Predictor) -> None:
+    def __init__(self, camera: ThreadCam, emotionModel) -> None:
         super(SchedulerThread, self).__init__()
         # 摄像头调度线程
         self.camera = camera

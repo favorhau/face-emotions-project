@@ -10,7 +10,6 @@ import db
 # Thread-4 Scheduler trigger Thread [中心定时调度器线程]
 from scheduler import SchedulerThread
 # Thread-5 Model Calculator Thread [算法模型计算线程]
-from model.resnet import Predictor
 
 
 # -*- 中心服务器执行程序 -*-
@@ -32,6 +31,7 @@ if __name__ == '__main__':
     if args.client:
         # 客户端 数据采集侧 运行
         from api import app, threadCam
+        from model.resnet import Predictor
         mtcnn_model_path = 'model/save_model/mtcnn'
         emotion_model_path = 'model/save_model/best_checkpoint.tar'
         image_path = './assets/children7.jpg'

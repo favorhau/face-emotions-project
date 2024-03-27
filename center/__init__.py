@@ -119,7 +119,7 @@ def face_reg():
     token = data['token']
     
     # log('', '当前', [_[1] for _ in users])
-    
+    print(data)
     if(not users): return ''
     if(token):
         statusDict['device'][token] = int(datetime.now().timestamp())     
