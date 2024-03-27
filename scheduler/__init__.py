@@ -84,7 +84,7 @@ class SchedulerThread(threading.Thread):
                 },
                 timeout=3000
             )
-            log('', str(emotions), '数据同步成功')
+            log('', str(emotions), str(boxes), '数据同步成功')
             
         except Exception as e:
             log(str(e), '数据同步异常')
