@@ -45,12 +45,10 @@ if __name__ == '__main__':
 
         mtcnn_model_path = 'model/save_model/mtcnn'
         emotion_model_path = 'model/save_model/best_checkpoint.tar'
-        mobilefacenet_model_path = 'model/save_model/mobilefacenet.pth'
         image_path = './assets/children7.jpg'
-        face_db_path = './model/package/train_images'
         threshold = 0.6
-        predictor = Predictor(mtcnn_model_path, mobilefacenet_model_path, emotion_model_path, face_db_path, threshold)
-        
+        predictor = Predictor(mtcnn_model_path, emotion_model_path, threshold)
+
         from api import app, threadCam
         schedulerThread = SchedulerThread(camera=threadCam, emotionModel=predictor)
         schedulerThread.start()
