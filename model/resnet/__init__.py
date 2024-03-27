@@ -100,7 +100,7 @@ class Predictor:
         new_boxes = []
         for i in range(boxes.shape[0]):
             bbox = boxes[i, :4]
-            corpbbox = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
+            corpbbox = [int(bbox[0]), int(bbox[1]), int(bbox[2]) - int(bbox[0]), int(bbox[3] - int(bbox[1]))]
             new_boxes.append(corpbbox)
         
         return new_boxes, emotions
