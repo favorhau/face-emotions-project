@@ -132,11 +132,10 @@ def face_reg():
             np.frombuffer(base64.b64decode(_), dtype=np.uint8)
             for _ in data['faces']
         ]
-        
         # 还原array状态
         reshape_image = [
-            _.reshape((windows[3], windows[4], 3)) 
-            for _ in decoded_image
+            img.reshape((windows[idx][2], windows[idx][3], 3))
+            for (idx, img) in enumerate(decoded_image)
         ]
         
     except Exception as e:
@@ -148,12 +147,12 @@ def face_reg():
     except Exception as e:
         log('error', 'center/__init__.py', 'predict Error', e)
         
+
     target_data = zip(res, data['emotions'])
     # 4. 录入原始数据
     for (id, emo) in target_data:
         if(id and id in [str(_[0]) for _  in users]):
             insert_data(user_id=id, emotion=emo)
-            
             
     return ''
 

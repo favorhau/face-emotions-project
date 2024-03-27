@@ -54,14 +54,13 @@ class SchedulerThread(threading.Thread):
     def exec(self):
         img_np = np.frombuffer(self.camera.get_frame(), dtype=np.uint8)
         img_np_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
-        img_np_cv2_copy = img_np_cv2.copy()
         
         boxes, emotions = self.emotionModel.recognition(img_np_cv2)
         
         faces = []
         
         for (x, y, w, h) in boxes:
-            face = img_np_cv2_copy[y:y+h, x:x+w]
+            face = img_np_cv2[y:y+h, x:x+w]
             # 色彩空间变换
             b, g, r = cv2.split(face)
             face_rgb = cv2.merge([r, g, b])
