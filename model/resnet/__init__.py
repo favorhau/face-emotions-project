@@ -65,7 +65,7 @@ class Predictor:
         imgs, boxes = self.mtcnn.infer_image(img)
         print('人脸检测时间：%dms' % int((time.time() - s) * 1000))
         if imgs is None or boxes is None:
-            return [], [], []
+            return [], []
         s = time.time()
         images = self.process(imgs)
         images = np.array(images, dtype='float32')
@@ -98,7 +98,9 @@ class Predictor:
 
         print('表情识别时间：%dms' % int((time.time() - s) * 1000))
 
-        return boxes[0:4], emotions
+        boxes = boxes[0:4]
+        
+        return boxes, emotions
 
     def add_text(self, img, text, left, top, color=(0, 0, 0), size=20):
         if isinstance(img, np.ndarray):
