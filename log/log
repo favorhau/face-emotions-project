@@ -1,10 +1,10 @@
-[2024-03-19 15:11:28] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/刘亦菲.jpg  
-[2024-03-19 15:11:28] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/5.jpg  
-[2024-03-19 15:11:29] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/郑秀晶.jpg  
-[2024-03-19 15:11:29] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/唐艺昕.jpg  
-[2024-03-19 15:11:29] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/迪丽热巴.jpg  
-[2024-03-19 15:11:29] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/3.jpg  
-[2024-03-19 15:11:30] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/李易峰.jpg  
-[2024-03-19 15:11:30] 正在处理: /Users/favorhau/Desktop/毕业进行时/face-emotions-project/model/package/train_images/戴景昊.jpg  
-[2024-03-19 15:11:30] 数据库已初始化  
-[2024-03-19 15:16:07] center.py/__init__.py 录入 favorhau 2024-03-19 报告成功  
+[2024-03-26 11:20:54] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff3185e3790>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:20:55] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff338168df0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:20:56] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff3381688b0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:20:57] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff349404460>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:20:58] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff349404610>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:20:59] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff349404df0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:21:00] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff34941a1c0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:21:01] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff338168df0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:21:02] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff3185e3220>: Failed to establish a new connection: [Errno 61] Connection refused'))
+[2024-03-26 11:21:03] 数据同步异常 [原因] HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/face_reg (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff3185e3880>: Failed to establish a new connection: [Errno 61] Connection refused'))

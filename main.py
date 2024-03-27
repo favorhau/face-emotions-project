@@ -37,8 +37,7 @@ if __name__ == '__main__':
         schedulerThread.start()
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
     elif args.test:
-        
-        import argparse
+
         import cv2
         import numpy as np
         from model.resnet import Predictor
@@ -50,9 +49,12 @@ if __name__ == '__main__':
         face_db_path = './model/package/train_images'
         threshold = 0.6
         predictor = Predictor(mtcnn_model_path, mobilefacenet_model_path, emotion_model_path, face_db_path, threshold)
-        img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
-        boxes, names, emotions = predictor.recognition(img)
-        predictor(boxes)
+        schedulerThread = SchedulerThread(camera=threadCam, emotionModel=predictor)
+        schedulerThread.start()
+        app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
+        # img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
+        # boxes, names, emotions = predictor.recognition(img)
+        # print(boxes)
         
     else:
         # 服务端 数据处理侧 运行
