@@ -84,6 +84,7 @@ class SchedulerThread(threading.Thread):
                 },
                 timeout=3000
             )
+            print(boxes, names, emotions)
             log('', str(emotions), '数据同步成功')
             
         except Exception as e:

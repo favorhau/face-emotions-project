@@ -122,7 +122,7 @@ class Predictor:
         imgs, boxes = self.mtcnn.infer_image(img)
         print('人脸检测时间：%dms' % int((time.time() - s) * 1000))
         if imgs is None:
-            return None, None, None
+            return [], [], []
         s = time.time()
         images = self.process(imgs)
         images = np.array(images, dtype='float32')
