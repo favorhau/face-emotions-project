@@ -94,7 +94,7 @@ class SchedulerThread(threading.Thread):
 
         
     def run(self):
-        schedule.every(1).seconds.do(self.exec)
+        schedule.every(5).seconds.do(self.exec)
         while True:
             # 运行待执行的任务
             schedule.run_pending()
