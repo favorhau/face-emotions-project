@@ -41,7 +41,8 @@ if __name__ == '__main__':
         import cv2
         import numpy as np
         from model.resnet import Predictor
-
+        from api import app, threadCam
+        
         mtcnn_model_path = 'model/save_model/mtcnn'
         emotion_model_path = 'model/save_model/best_checkpoint.tar'
         mobilefacenet_model_path = 'model/save_model/mobilefacenet.pth'
