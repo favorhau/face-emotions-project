@@ -56,7 +56,7 @@ class SchedulerThread(threading.Thread):
         img_np = np.frombuffer(self.camera.get_frame(), dtype=np.uint8)
         img_np_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
 
-        boxes, emotions = self.emotionModel.recognition(img_np_cv2)
+        boxes, names, emotions = self.emotionModel.recognition(img_np_cv2)
         
         faces = []
         
