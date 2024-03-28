@@ -1,4 +1,4 @@
-import { Typography, CircularProgress, Box, IconButton, Backdrop } from '@mui/material';
+import { Typography, CircularProgress, Box, IconButton, Backdrop, Pagination, Stack, Button } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import SearchIcon from '@mui/icons-material/Search';
@@ -7,6 +7,7 @@ import { httpClient } from '@/utils/requests';
 import { calHealthy, calHealthyText } from '@/utils/calculator';
 import { ReportDataProps } from '@/pages/report/[id]';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { number } from 'echarts';
 
 export type ReportListProps = Array<
     {
@@ -25,6 +26,9 @@ export default function Reports(){
     const inputRef = useRef<HTMLInputElement>(null);
     const [list, setList] = useState<ReportListProps>();
     const [open, setOpen] = React.useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
+    const currPageSize = 0;
     const handleClose = () => {
       setOpen(false);
     };
@@ -32,11 +36,22 @@ export default function Reports(){
       setOpen(true);
     };
 
+
     const init = async() => {
         const value = inputRef.current?.value;
-        const data = await httpClient.post('/api/getReport', {
+        const {data , count, page, pageSize} = await httpClient.post('/api/getReport', {
             id: value ? null : value,
-        }) as unknown
+            page: currentPage,
+            pageSize: currPageSize,
+        }) as {
+            data: ReportListProps,
+            count: number,
+            page: number
+            pageSize: number,
+        }
+        
+        setCurrentPage(1);
+        setPageCount(count)
        
         setList(
             [
@@ -53,6 +68,37 @@ export default function Reports(){
         )
     }
     
+    const handlePageChange = async (event: React.ChangeEvent<unknown>, value: number) => {
+      setCurrentPage(value);
+      const v = inputRef.current?.value;
+      const {data , count, page, pageSize} = await httpClient.post('/api/getReport', {
+        id: v ? null : v,
+        page: value,
+        pageSize: currPageSize,
+        }) as {
+            data: ReportListProps,
+            count: number,
+            page: number
+            pageSize: number,
+        }
+        
+        setPageCount(count);
+    
+        setList(
+            [
+                ...(data as ReportListProps).map((v: any)=>{
+                    const grade = calHealthyText(calHealthy(v['data']['心理分析'] as unknown as {name: string, value: number}[]));
+                    return {
+                        name: v.name,
+                        id: v.id,
+                        grade: grade,
+                        user_id: v.user_id,
+                        date: v.date,
+                    }
+            })]
+        )
+    };
+    
     const genReport =  async () => {
         handleOpen()
         await httpClient.post('/api/genReport') as unknown
@@ -62,11 +108,19 @@ export default function Reports(){
     const searchData = async () => {
         handleOpen()
         const value = inputRef.current?.value;
-        const data = await httpClient.post('/api/getReport', {
+        const {data , count, page, pageSize} = await httpClient.post('/api/getReport', {
             user_id: value,
             name: value,
             id: value,
-        })
+            page: 1,
+            pageSize: currPageSize,
+        })  as {
+            data: ReportListProps,
+            count: number,
+            page: number
+            pageSize: number,
+        }
+        setPageCount(count);
         setTimeout(() => {
             handleClose()
         }, 500) 
@@ -99,12 +153,13 @@ export default function Reports(){
         <CircularProgress color="inherit" />
       </Backdrop>
       <div 
-      className='fixed right-[2rem] bottom-[2rem] w-[3rem] h-[3rem] flex justify-center items-center rounded-full bg-primary transition-all  hover:scale-105 cursor-pointer'
+      style={{zIndex: 999,}}
+      className='fixed right-[2rem] bottom-[2rem] w-[8rem] h-[3rem] flex justify-center items-center rounded-full bg-primary transition-all hover:scale-105 cursor-pointer'
       onClick={() => {
         genReport()
       }}
         >
-            <RefreshIcon sx={{color: 'white'}} />
+            <Button style={{color: 'white'}}>生成当天报告</Button> 
         </div>
        <div className='w-full relative'>
         <input
@@ -123,7 +178,7 @@ export default function Reports(){
             </div>
         </div>
         
-        <div className='h-full mt-[2rem] flex flex-wrap'>
+        <div className='h-full mt-[2rem] flex flex-wrap justify-center'>
             {
                 list && list.map(({name, id, grade, date, user_id}) => {
                     return <div
@@ -161,6 +216,15 @@ export default function Reports(){
                 </div>
                 })
             }
+            { pageCount > 0 && <Stack spacing={2} className='w-full flex justify-center items-center'>
+                <Pagination onChange={handlePageChange} page={currentPage} className='mt-auto' count={pageCount} variant="outlined" color="primary" />
+            </Stack> }
+            { pageCount == 0 && <Stack spacing={2} className='w-full flex justify-center items-center'>
+                <p>找不到数据</p>
+            </Stack> }
         </div>
+        
+       
+        
     </div>
 }
