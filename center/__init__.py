@@ -277,6 +277,27 @@ def del_users_():
     except Exception as e:
         return Response(response=f"Error: {str(e)}", status=500)
     
+# 验证密钥
+@app.route('/api/verify_code', methods=['POST'])
+def verify_code():
+    import pyotp
+    try:
+        data = request.get_json()
+        code = data['code']
+        with open('./config/secret.config', 'r') as f:
+            # Create a TOTP object
+            totp = pyotp.TOTP(f.read())
+            # Verify a TOTP code
+            is_valid = totp.verify(code)
+            
+            return jsonify({
+            "data": {
+                "result": is_valid
+            }
+        })
+    except Exception as e:
+        return Response(response=f"Error: {str(e)}", status=500)
+
 
 # 图片映射
 @app.route('/api/img/<filename>')
