@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { OrbitControls, OrthographicCamera, PerspectiveCamera, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 
@@ -24,8 +24,23 @@ function Model() {
 
 export default function Hat() {
  
+ const [width, setWidth] = useState(1800);
+ 
+ const updateWidth = () => {
+  setWidth(window.innerWidth)
+  console.log(window.innerWidth);
+ }
+
+ useEffect(() => {
+  setWidth(window.innerWidth)
+  addEventListener('resize', updateWidth)
+  return () => {
+    removeEventListener('resize', updateWidth); 
+  }
+ }, [])
+ 
   return (
-    <Canvas style={{height: 600, width: 500}}>
+    <Canvas style={{height: width > 640 ? 600 : 300, width: width > 640 ? 500 : 320}}>
       
       <Suspense>
         <Model />

@@ -102,7 +102,8 @@ export default function Reports(){
     const genReport =  async () => {
         handleOpen()
         await httpClient.post('/api/genReport') as unknown
-        handleClose()
+        await init()
+        setTimeout(handleClose, 900);
         
     }
     const searchData = async () => {
@@ -183,7 +184,7 @@ export default function Reports(){
                 list && list.map(({name, id, grade, date, user_id}) => {
                     return <div
                         key={id}
-                        className='min-w-[22rem] w-[45vw] shadow p-4 pb-10 mx-2 mb-4 rounded-xl flex items-center justify-between relative cursor-pointer'
+                        className='min-w-[20rem] w-[45vw] shadow p-4 pb-10 mx-2 mb-4 rounded-xl flex items-center justify-between relative cursor-pointer'
                         onClick={() => {
                             window.location.href = `/report/${id}`
                         }}>
