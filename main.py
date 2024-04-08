@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-c', '--client', help='运行在客户端', action='store_true')      # option that takes a value
     parser.add_argument('-s', '--server', help='运行在服务端', action='store_true')      # option that takes a value
+    parser.add_argument('-g', '--generate', help='生成/更新密钥', action='store_true')      # option that takes a value
     parser.add_argument('-t', '--test', help='在本机上测试', action='store_true')      # option that takes a value
     
     args = parser.parse_args()
@@ -42,6 +43,15 @@ if __name__ == '__main__':
         app.run('0.0.0.0', port=ClientConfig.port, threaded=True)
     elif args.test:
         pass
+    elif args.generate:
+        import pyotp
+        try:
+            totp_secret = pyotp.random_base32()
+            with open('./config/secret.config', 'w') as f:
+                f.write(totp_secret)
+            print('生成密钥成功:', totp_secret)
+        except Exception as e:
+            print('生成密钥失败，原因:', str(e))
     else:
         # 服务端 数据处理侧 运行
         

@@ -41,11 +41,11 @@ export default function Report() {
 
   //初始化report
   const init = useCallback(async () => {
-    const ret = (await httpClient.post('/api/getReport', {
+    const { data } = await httpClient.post('/api/getReport', {
       id,
       type: 'term'
-    }) as { [key: string]: any; data: { [key: string]: any; }; }[])[0];
-    console.log(ret)
+    }) as { [key: string]: any; data: { [key: string]: any; }; };
+    const ret = data[0];
     setData({
       userId: ret.user_id as string,
       name: ret.name,

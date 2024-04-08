@@ -134,7 +134,7 @@ export default function Dashboard(){
         <div className='w-full min-w-[18rem] max-w-[50rem] min-h-[15rem] bg-white rounded-xl shadow-md mx-[1rem] mt-[2rem] p-[1rem] relative'>
             <Typography variant='h6'>总体用户状态</Typography>
             <div className='flex flex-row flex-wrap'>
-                <div className='flex mt-[2rem] h-[8rem] w-[10rem] flex-col justify-around items-center'>
+                <div className='flex mt-[2rem] h-[8rem] w-[8rem] flex-col justify-around items-center'>
                     <Box  component="div" sx={{ position: 'relative', display: 'inline-flex' }}>
                         <CircularProgress variant="determinate" value={90} size={90} color='success'/>
                         <Box
@@ -160,15 +160,15 @@ export default function Dashboard(){
                     <Typography className='text-invaild' variant='subtitle2'>健康度</Typography>
                 </div>
                 
-                <div className='flex mt-[2rem] h-[8rem] w-[10rem] flex-col justify-around items-center'>
+                <div className='flex mt-[2rem] h-[8rem] w-[8rem] flex-col justify-around items-center'>
                     <Typography variant='h3' className='text-black relative' style={{zIndex:88}}>{deviceData.dataCount}</Typography>
                     <Typography className='text-invaild' variant='subtitle2'>当前数据条数</Typography>
                 </div>
-                <div className='flex mt-[2rem] h-[8rem] w-[10rem] flex-col justify-around items-center'>
+                <div className='flex mt-[2rem] h-[8rem] w-[8rem] flex-col justify-around items-center'>
                     <Typography variant='h3' className='text-success relative' style={{zIndex:88}}>{deviceData.emotionsData.happy ?? 0}</Typography>
                     <Typography className='text-invaild' variant='subtitle2'>Happy</Typography>
                 </div>
-                <div className='flex mt-[2rem] h-[8rem] w-[10rem] flex-col justify-around items-center'>
+                <div className='flex mt-[2rem] h-[8rem] w-[8rem] flex-col justify-around items-center'>
                     <Typography variant='h3' className='text-error relative' style={{zIndex:88}}>{deviceData.emotionsData.sad ?? 0}</Typography>
                     <Typography className='text-invaild' variant='subtitle2'>Sad</Typography>
                 </div>

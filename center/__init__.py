@@ -166,6 +166,8 @@ def get_report():
     id = data.get('id')
     name = data.get('name')
     type = data.get('type')
+    pageSize = int(data.get('pageSize')  or 10 )
+    page = int(data.get('page')  or 1 )
     
     if(id and not id.isdigit()) : id = None
     if(user_id and not user_id.isdigit()) : user_id = None
@@ -190,7 +192,10 @@ def get_report():
         log(str(e))
         
     return jsonify({
-        "data": ret
+        "data": ret[(page-1) * pageSize : page * pageSize],
+        "count": len(ret) // pageSize + (1 if len(ret) % pageSize > 0 else 0),
+        "page": page,
+        "pageSize": pageSize,
     })
     
     
@@ -272,6 +277,27 @@ def del_users_():
     except Exception as e:
         return Response(response=f"Error: {str(e)}", status=500)
     
+# 验证密钥
+@app.route('/api/verify_code', methods=['POST'])
+def verify_code():
+    import pyotp
+    try:
+        data = request.get_json()
+        code = data['code']
+        with open('./config/secret.config', 'r') as f:
+            # Create a TOTP object
+            totp = pyotp.TOTP(f.read())
+            # Verify a TOTP code
+            is_valid = totp.verify(code)
+            
+            return jsonify({
+            "data": {
+                "result": is_valid
+            }
+        })
+    except Exception as e:
+        return Response(response=f"Error: {str(e)}", status=500)
+
 
 # 图片映射
 @app.route('/api/img/<filename>')
